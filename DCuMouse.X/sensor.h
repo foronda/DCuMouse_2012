@@ -1,52 +1,33 @@
-/* 
- * File:   sensor.h
- * Author: Brylian Foronda
- *
- * Created on November 2, 2012, 2:41 PM
- */
-
 #ifndef SENSOR_H
 #define	SENSOR_H
 
-#ifdef	__cplusplus
-extern "C" {
-#endif
+#define TAD 0.000000075 // Minimum ADC Clock Period 75ns
 
-class Sensor
-{
-public:
-    Sensor();
-    ~Sensor();
+#define ADCFR 0         // AN0 Front Right ADC
+#define ADCFL 6         // AN6 Front Left ADC
+#define ADCSR 1         // AN1 Side Right ADC
+#define ADCSL 7         // AN7 Side Left ADC
 
-    // ADC Constructor
-    void InitADC();
-    
-    // Accessors
-    // Get sensor ADC Values
-    unsigned int GetFR();
-    unsigned int GetFL();
-    unsigned int GetSR();
-    unsigned int GetSL();
+struct ADC {
+    unsigned int FR; // Front Right Detector
+    unsigned int FL; // Front Left Detector
+    unsigned int SR; // Side Right Detector
+    unsigned int SL; // Side Left Detector
+};
 
-    // Mutators
-    // Set sensor values from ADC
-    SetFR(unsigned int s);
-    SetFL(unsigned int s);
-    SetSR(unsigned int s);
-    SetSL(unsigned int s);
+// ADC Configuration
+void InitADC(void);
+void SetCH0In(char c); // Sets which AN port to sample on CH0
+void EnableADC(void);
+void DisableADC(void);
 
-private:
-    // Private variables for storing ADC Values
-    unsigned int FrontRight;
-    unsigned int FrontLeft;
-    unsigned int SideRight;
-    unsigned int SideLeft;
-    
-    const int EmitterDelay;
-}
+// Sensor Accessor Functions
+unsigned int ReadFR(void);
+unsigned int ReadFL(void);
+unsigned int ReadSR(void);
+unsigned int ReadSL(void);
 
-#ifdef	__cplusplus
-}
-#endif
+// Samples and Convert Emitter Values
+void ADCDone(char d);
 
 #endif	/* SENSOR_H */

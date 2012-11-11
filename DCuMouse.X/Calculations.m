@@ -1,0 +1,2 @@
+clc; clear all;
+syms FCY TCY TAD; FCY=40000000; TCY=1/FCY; TAD=0.000000075; ADCS=TAD/TCY -1
