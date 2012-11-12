@@ -33,12 +33,12 @@ void InitADC(void)
     // Can be changed using SetChanIn()
 
     // AD1PCFGH/AD1PCFGL: Port Configuration Register
-    AD1PCFGL=0xFFFF;
-    AD1PCFGLbits.PCFG0 = 0;		// AN0 as Analog Input
+    AD1PCFGL = 0xFF3C;          // AN0,AN1, AN6, AN7 => Analog Input
+                                // Rest Digital
 
     /********** Configure ADC Interrupts ***********/
     IFS0bits.AD1IF = 0;         // Clear A/D Interrupt Flag Bit
-
+    IEC0bits.AD1IE = 1;         // Set the A/D Interrupt Enable Bit
 }
 
 void SetCH0In(char c)
