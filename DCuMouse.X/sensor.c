@@ -33,6 +33,7 @@ void InitADC(void)
     // Can be changed using SetChanIn()
 
     // AD1PCFGH/AD1PCFGL: Port Configuration Register
+    AD1PCFGL = 0xFFFF;          // Clear all Ports
     AD1PCFGL = 0xFF3C;          // AN0,AN1, AN6, AN7 => Analog Input
                                 // Rest Digital
 
@@ -47,13 +48,21 @@ void SetCH0In(char c)
 void EnableADC(void)
 {   
     AD1CON1bits.ADON = 1;
-    AD1CON1bits.SAMP = 1;       // Start Sampling
 }
 
 void DisableADC(void)
 {   
     AD1CON1bits.ADON = 0;
-    AD1CON1bits.SAMP = 0;       // Stop Sampling
+}
+
+void StartSamp(void)
+{
+    AD1CON1bits.SAMP = 1;       // Start Sampling
+}
+
+void StopSamp(void)
+{
+    AD1CON1bits.SAMP = 0;       // Stop Sampling, Start Conversion
 }
 
 void __attribute__((interrupt, no_auto_psv)) _ADCInterrupt(void)
@@ -81,8 +90,10 @@ unsigned int ReadFR(void)
 {
     SetCH0In(ADCFR);            // Sample FR Emitter
     EnableADC();                // Enable ADC Module, Start Sampling
+    __delay_us(10);             // Sample for 10us
     while(!AD1CON1bits.DONE);
-
+    Sensors.FR = ADCBUF0;
+    
     return Sensors.FR;
 }
 
@@ -95,6 +106,11 @@ unsigned int ReadSR(void)
 unsigned int ReadSL(void)
 {   return Sensors.SL;  }
 
+// Emitter Functions
+void OnFR(void)
+{
+    Front = 1;
+}
 /***************************************/
 /******** END SENSOR FUNCTIONS *********/
 /***************************************/
