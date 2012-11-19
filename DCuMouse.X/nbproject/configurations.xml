@@ -8,6 +8,9 @@
       <itemPath>uart.h</itemPath>
       <itemPath>qei.h</itemPath>
       <itemPath>sensor.h</itemPath>
+      <itemPath>led.h</itemPath>
+      <itemPath>pwm.h</itemPath>
+      <itemPath>controller.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -20,6 +23,9 @@
       <itemPath>uart.c</itemPath>
       <itemPath>qei.c</itemPath>
       <itemPath>sensor.c</itemPath>
+      <itemPath>pwm.c</itemPath>
+      <itemPath>led.c</itemPath>
+      <itemPath>controller.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -122,7 +128,7 @@
         <property key="REAL TIME CLOCK AND CALENDAR" value="true"/>
         <property key="SPI 1" value="true"/>
         <property key="SPI 2" value="true"/>
-        <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
+        <property key="SecureSegment.SegmentProgramming" value="SegmentProgrammingAll"/>
         <property key="TIMER1" value="true"/>
         <property key="TIMER2" value="true"/>
         <property key="TIMER3" value="true"/>
@@ -154,7 +160,7 @@
         <property key="programoptions.preserveuserid" value="false"/>
         <property key="programoptions.usehighvoltageonmclr" value="false"/>
         <property key="programoptions.uselvpprogramming" value="false"/>
-        <property key="voltagevalue" value="3.25"/>
+        <property key="voltagevalue" value="3.375"/>
       </PICkit3PlatformTool>
     </conf>
   </confs>

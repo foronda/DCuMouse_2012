@@ -2,7 +2,7 @@
 #define	SENSOR_H
 
 #define TAD 0.000000075 // Minimum ADC Clock Period 75ns
-#defint TCONV 12*TAD    // ADC Conversion Time 
+#define TCONV 12*TAD    // ADC Conversion Time
 
 #define ADCFR 0         // AN0 Front Right ADC
 #define ADCFL 6         // AN6 Front Left ADC

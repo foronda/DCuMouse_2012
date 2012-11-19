@@ -34,7 +34,7 @@ void InitADC(void)
 
     // AD1PCFGH/AD1PCFGL: Port Configuration Register
     AD1PCFGL = 0xFFFF;          // Clear all Ports
-    AD1PCFGL = 0xFF3C;          // AN0,AN1, AN6, AN7 => Analog Input
+    AD1PCFGL = 0xFF3C;          // AN0,AN1,AN6,AN7 => Analog Input
                                 // Rest Digital
 
     /********** Configure ADC Interrupts ***********/
@@ -65,7 +65,7 @@ void StopSamp(void)
     AD1CON1bits.SAMP = 0;       // Stop Sampling, Start Conversion
 }
 
-void __attribute__((interrupt, no_auto_psv)) _ADCInterrupt(void)
+void __attribute__((interrupt, no_auto_psv)) _ADC1Interrupt(void)
 {
     DisableADC();
     

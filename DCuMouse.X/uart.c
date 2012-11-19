@@ -18,8 +18,8 @@ void InitUART(void)
     /********** RPIN/RPOR Registers  **********/
     // I/O Port mapping for UART Modules
 
-    RPINR18bits.U1RXR = 11;          // UART Receive tied to RP11[Pin8] (U1RXR <4:0>) p.182 Datasheet
-    RPOR5bits.RP10R = 3;             // UART Transmit tied to RP10[Pin9] (U1TX <4:0>) p.167 Datasheet
+    RPINR18bits.U1RXR = 8;          // UART Receive tied to RP8[Pin44] (U1RXR <4:0>) p.182 Datasheet
+    RPOR4bits.RP9R = 3;             // UART Transmit tied to RP9[Pin1] (U1TX <4:0>) p.167 Datasheet
 
     /********** U1BRG Register  **********/
     // Stores the baud rate value of the transmitted or received data
