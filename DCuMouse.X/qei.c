@@ -1,11 +1,12 @@
 #include "qei.h"
+#include "controller.h"
 
 void InitQEI(void)
 {
-    InitQEI1();
-    InitQEI2();
+    InitRQEI();
+    InitLQEI();
 }
-void InitQEI1(void)
+void InitRQEI(void)
 {
     /********** QEI1CON 16-bit Register (Section 15. p.5) **********/
     // Controls QEI operation and provide status flags for state modules
@@ -22,7 +23,7 @@ void InitQEI1(void)
     /********** DFLT1CON 16-bit Register (Section 15. p.7) **********/
     // Digital filter used to filter spikes in QEI signals
 
-    DFLT1CONbits.CEID = 1;          // Interrupts for count erros are disabled
+    DFLT1CONbits.CEID = 1;          // Interrupts for count errors are disabled
     DFLT1CONbits.QEOUT = 0;         // Digital Output filter disabled
     DFLT1CONbits.QECK = 0;          // 1:1 Digital Filter Clock Divide (QECK <2:0>)
 
@@ -34,29 +35,29 @@ void InitQEI1(void)
     /********** MAX1CNT 16-bit Register  **********/
     // Register associated with a comparator for comparing POS1CNT counter
 
-    MAX1CNT = 64;                   // Sets maximum count to 16x4 = 64 resolution for HES164a encoder
+    MAX1CNT = 2048;                 // Sets maximum count to 512x4 = 2048 resolution for IE-512 encoder
 
     /********** Interrupt Registers Configuration **********/
-    IFS3bits.QEI1IF = 0;            // Clears QEI1 Interrupt Flag
-    IPC14bits.QEI1IP = 7;           // Interrupt Has the highest priority (QEI1IP <2:0>)
-    IEC3bits.QEI1IE = 1;            // Enables Interrupt for QEI, occurs when POS1CNT == MAX1CNT
+    //IFS3bits.QEI1IF = 0;            // Clears QEI1 Interrupt Flag
+    //IPC14bits.QEI1IP = 7;           // Interrupt Has the highest priority (QEI1IP <2:0>)
+    //IEC3bits.QEI1IE = 1;            // Enables Interrupt for QEI, occurs when POS1CNT == MAX1CNT
 
     /********** RPINR14 Register  **********/
     // I/O Port mapping for QEI Modules
 
-    RPINR14bits.QEA1R = 22;         // QEIA Input tied to RP22 (QEA1R<4:0> Pin 2)
-    RPINR14bits.QEB1R = 23;         // QEIB Input tied to RP23 (QEB1R<4:0> Pin 3)
-    //TRISBbits.TRISB6 = 0;
-    //TRISBbits.TRISB7 = 1;
+    AD1PCFGL = 0xFFFF;             // Configure for Digital Inputs
+    RPINR14bits.QEA1R = 2;         // QEIA Input tied to RP2 (QEA1R<4:0> Pin 2)
+    RPINR14bits.QEB1R = 3;         // QEIB Input tied to RP3 (QEB1R<4:0> Pin 3)
 }
-void InitQEI2(void)
+void InitLQEI(void)
 {
      /********** QEI2CON 16-bit Register (Section 15. p.5) **********/
     // Controls QEI operation and provide status flags for state modules
 
     QEI2CONbits.QEISIDL = 0;        // Continue module operation in idle mode
     QEI2CONbits.CNTERR = 0;         // Clear any count errors
-    QEI2CONbits.UPDN = 1;           // Position Counter Direction is positive (+)
+    QEI2CONbits.UPDN = 0;           // Position Counter Direction is negative (-)
+                                    // Left Motor For is opposite from Right Motor For
     QEI2CONbits.SWPAB= 0;           // QEA and QEB not swapped, A leads B
     QEI2CONbits.INDX = 1;           // Read only - Index pin state status pin.
     QEI2CONbits.POSRES = 0;         // No index pulse reset
@@ -73,40 +74,35 @@ void InitQEI2(void)
     /********** POS1CNT 16-bit Register  **********/
     // Allows reading and writing of the position counter
 
-    POS2CNT = 0;                    // Initialize Position Counter => 0
+    POS2CNT = 2048;                    // Initialize Position Counter => 0
 
     /********** MAX1CNT 16-bit Register  **********/
     // Register associated with a comparator for comparing POS1CNT counter
 
-    MAX2CNT = 64;                   // Sets maximum count to 16x4 = 64 resolution for HES164a encoder
+    MAX2CNT = 0;                   // Sets maximum count to 512x4 = 2048/rev resolution for IE-512 encoder
 
     /********** Interrupt Registers Configuration **********/
-    IFS4bits.QEI2IF = 0;            // Clears QEI2 Interrupt Flag
-    IPC18bits.QEI2IP = 7;           // Interrupt Has the highest priority (QEI2IP <2:0>)
-    IEC4bits.QEI2IE = 1;            // Enables Interrupt for QEI, occurs when POS2CNT == MAX2CNT
+    //IFS4bits.QEI2IF = 0;            // Clears QEI2 Interrupt Flag
+    //IPC18bits.QEI2IP = 7;           // Interrupt Has the highest priority (QEI2IP <2:0>)
+    //IEC4bits.QEI2IE = 1;            // Enables Interrupt for QEI, occurs when POS2CNT == MAX2CNT
 
     /********** RPINR14 Register  **********/
     // I/O Port mapping for QEI Modules
 
-    RPINR16bits.QEA2R = 24;         // QEI2A Input tied to RP24 (QEA2R<4:0> Pin 4)
-    RPINR16bits.QEB2R = 25;         // QEI2B Input tied to RP25 (QEB2R<4:0> Pin 5)
-    //TRISBbits.TRISB6 = 0;
-    //TRISBbits.TRISB7 = 1;
+    AD1PCFGL = 0xFFFF;             // Configure for Digital Inputs
+    RPINR16bits.QEA2R = 0;         // QEI2A Input tied to RP0 (QEA2R<4:0> Pin 21)
+    RPINR16bits.QEB2R = 1;         // QEI2B Input tied to RP1 (QEB2R<4:0> Pin 22)
 }
 
 
 void __attribute__((__interrupt__, no_auto_psv)) _QEI1Interrupt (void)
 {
     IFS3bits.QEI1IF = 0;        // Clears QEI1 Interrupt Flag
-    printf("QEI Interrupt has occured.\n\n");
-    PDC1 = 0;
 }
 
 void __attribute__((__interrupt__, no_auto_psv)) _QEI2Interrupt (void)
 {
     IFS4bits.QEI2IF = 0;        // Clears QEI2 Interrupt Flag
-    printf("QEI Interrupt has occured.\n\n");
-    PDC2 = 0;
 }
 
 void TestQEI(void)

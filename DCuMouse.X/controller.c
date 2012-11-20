@@ -2,43 +2,107 @@
 #include "common.h"
 #include "pwm.h"
 
+// Test Functions
+void TestRQEI(void)
+{
+    __delay_ms(2000);
+    RMOTOR_SPEED = PTPER/32;
+    RMotorFor();
+    while(1)
+    {
+        if(POS1CNT%QUARTER_ROT == 0)
+        {
+            printf("Right Motor Count: %d\n", POS1CNT);
+            RMOTOR_SPEED = 0;
+            __delay_ms(1000);
+            RMOTOR_SPEED = PTPER/32;
+        }
+    }
+}
+void TestLQEI(void)
+{
+        __delay_ms(2000);
+    LMOTOR_SPEED = PTPER/32;
+    LMotorFor();
+    while(1)
+    {
+        if(POS2CNT%QUARTER_ROT == 0)
+        {
+            printf("Left Motor Count: %d\n", POS2CNT);
+            LMOTOR_SPEED = 0;
+            __delay_ms(1000);
+            LMOTOR_SPEED = PTPER/32;
+        }
+    }
+}
 void TestRMotor(void)
 {
     while(1)
     {
-        printf("PDC1: %d\n", PDC1);
-        StopRMotor();
+        printf("PDC1: %d\n", PDC2);
+        RMotorStop();
         __delay_ms(2000);
-        PDC1 = PTPER/16;
-        ForwardRMotor();
+        RMOTOR_SPEED = PTPER/16;
+        RMotorFor();
         __delay_ms(2000);
-        StopRMotor();
+        RMotorStop();
         __delay_ms(1000);
         //__delay_ms(2000);
-        PDC1 = PTPER/16;
-        ReverseRMotor();
+        RMOTOR_SPEED = PTPER/16;
+        RMotorRev();
         __delay_ms(2000);
     }
 }
 
-void ForwardRMotor(void)
+void TestLMotor(void)
+{
+    while(1)
+    {
+        LMotorStop();
+        __delay_ms(2000);
+        LMOTOR_SPEED = PTPER/16;
+        LMotorFor();
+        __delay_ms(2000);
+        LMotorStop();
+        __delay_ms(1000);
+        //__delay_ms(2000);
+        LMOTOR_SPEED = PTPER/16;
+        LMotorRev();
+        __delay_ms(2000);
+    }
+}
+
+
+// Right Motor Functions
+void RMotorFor(void)
 {
     PWMCON1bits.PEN1L = 0;
     PWMCON1bits.PEN1H = 1;
 }
-
-void ReverseRMotor(void)
+void RMotorRev(void)
 {
     PWMCON1bits.PEN1L = 1;
     PWMCON1bits.PEN1H = 0;
 }
-
-void StopRMotor(void)
+void RMotorStop(void)
 {
-    PDC1 = 0;
+    RMOTOR_SPEED = 0;
 }
 
-void SetRMotorSpeed(unsigned int s)
+// Left Motor Functions
+void LMotorFor(void)
 {
-    PDC1 = PTPER/32;
+    PWMCON1bits.PEN2L = 1;
+    PWMCON1bits.PEN2H = 0;
+}
+
+void LMotorRev(void)
+{
+    PWMCON1bits.PEN2L = 0;
+    PWMCON1bits.PEN2H = 1;
+}
+
+void LMotorStop(void)
+{
+    LMOTOR_SPEED = 0;
 }

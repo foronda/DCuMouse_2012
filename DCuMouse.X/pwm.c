@@ -2,10 +2,10 @@
 
 void InitPWM(void)
 {
-    TRISBbits.TRISB14 = 0;      // PWM1H1 (Pin 14) set as digital output
-    TRISBbits.TRISB15 = 0;
     TRISBbits.TRISB12 = 0;      // PWM1H2 (Pin 10) set as digital output
-    TRISBbits.TRISB13 = 0;
+    TRISBbits.TRISB13 = 0;      // PWM1L2 (Pin 11) set as digital output
+    TRISBbits.TRISB14 = 0;      // PWM1H1 (Pin 14) set as digital output
+    TRISBbits.TRISB15 = 0;      // PWM1L1 (Pin 15) set as digital output
     
     PORTB = 0x00;               // clear the outputs
 
@@ -22,7 +22,7 @@ void InitPWM(void)
 
     PTCONbits.PTMOD = 0;        // PWM operates in free-running Mode continuously (PTMOD <1:0>)
     PTMR = 0;                   // PWM counter value, start at 0 (PTMR <14:0>)
-    PTPER = 1023;                // PWM Timebase period, determines PWM frequency (PTPER <14:0>)
+    PTPER = 1023;               // PWM Timebase period, determines PWM frequency (PTPER <14:0>)
 
     /*~~~~~~~~~~~~~~ PWM1 Configuration ~~~~~~~~~~~~~~~~~~~~~~~*/
     /*~~~~~~~~~~~~~~ Page 220 of datasheet ~~~~~~~~~~~~~~~~~~~~*/
@@ -33,7 +33,7 @@ void InitPWM(void)
     /* FPWM = 40000000/(1023*1) = 39.1 kHz                 */
 
     PWMCON1bits.PMOD1 = 1;      // PWM1 in complementary mode (inverses PWML1)
-    PWMCON1bits.PMOD2 = 0;      // PWM2 in independent mode
+    PWMCON1bits.PMOD2 = 1;      // PWM2 in complementary mode (inverses PWML2)
 
     //PWMCON1bits.PEN1H = 1;      // PWM1H1 pin is enabled
     //PWMCON1bits.PEN2H = 1;      // PWM1H2 pin is enabled
@@ -44,8 +44,8 @@ void InitPWM(void)
     //PWMCON1bits.PEN1L = 0;      // PWM Low pin disabled (direction control later?)
 
     // The Duty cycle gives the time for which the PWM pulses are active in a given PWM time period.
-    PDC1 = PTPER/16;             // PWM#1 Duty Cycle register (PDC1<15:0>) 25% Active
-    //PDC2 = PTPER/8;           // PWM#2 Duty Cycle register (PDC3<15:0>)
+    //PDC1 = PTPER/16;             // PWM#1 Duty Cycle register (PDC1<15:0>) 25% Active
+    //PDC2 = PTPER/16;           // PWM#2 Duty Cycle register (PDC3<15:0>)
     //PDC3 = 0;                 // PWM#3 Duty Cycle register (PDC3<15:0>)
 
     PTCONbits.PTEN = 1;         // Enable PWM Timer

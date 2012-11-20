@@ -5,8 +5,8 @@
 
 void InitQEI();
 
-void InitQEI1();
-void InitQEI2();
+void InitRQEI();
+void InitLQEI();
 
 void TestQEI();
 

@@ -1,10 +1,9 @@
-#define RIGHT_MOTOR PORTBbits.RB15
-#define LEFT_MOTOR PORTBbits.RB13
+#define RMOTOR_SPEED PDC1
+#define LMOTOR_SPEED PDC2
 
-#define RDIR_FOR 0
-#define RDIR_REV 1
-#define LDIR_FOR 1
-#define LDIR_REV 0
+#define QUARTER_ROT 512
+#define HALF_ROT 1024
+#define ONE_ROT 2048
 
 #define Prescalar 1
 
@@ -12,11 +11,16 @@
 #define CONTROLLER_H
 #include "common.h"
 
-void TestRMotor();
-void ForwardRMotor(void);
-void ReverseRMotor(void);
-void StopRMotor(void);
-void SetRMotorSpeed(unsigned int s);
+void TestRMotor(void);
+void TestLMotor(void);
+
+void RMotorFor(void);
+void RMotorRev(void);
+void RMotorStop(void);
+
+void LMotorFor(void);
+void LMotorRev(void);
+void LMotorStop(void);
 
 #endif
 
