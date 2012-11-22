@@ -23,6 +23,11 @@ struct ADC {
     unsigned int FLNoise; // Front Left Detector
     unsigned int SRNoise; // Side Right Detector
     unsigned int SLNoise; // Side Left Detector
+
+    unsigned int FR; // Front Right Detector
+    unsigned int FL; // Front Left Detector
+    unsigned int SR; // Side Right Detector
+    unsigned int SL; // Side Left Detector
 };
 
 // ADC Configuration

@@ -38,6 +38,12 @@ void InitADC(void)
     AD1PCFGL = 0xFF3C;          // AN0,AN1,AN6,AN7 => Analog Input
                                 // Rest Digital
 
+    TRISAbits.TRISA0 = 1;       // FR_DET
+    TRISAbits.TRISA1 = 1;       // SR_DET
+    TRISCbits.TRISC0 = 1;       // SL_DET
+    TRISCbits.TRISC1 = 1;       // FL_DET
+
+    AD1CON1bits.ADON = 1;
     /********** Configure ADC Interrupts ***********/
     //IFS0bits.AD1IF = 0;         // Clear A/D Interrupt Flag Bit
     //IEC0bits.AD1IE = 1;         // Set the A/D Interrupt Enable Bit
@@ -73,28 +79,40 @@ unsigned int ReadFR(void)
 {
     Sensors.FRNoise = SampNoise(FR_DET);
     FR_EMI = ON;
-    return SampEmi(FR_DET)-Sensors.FRNoise;
+    Sensors.FR = SampEmi(FR_DET);
+    FR_EMI = OFF;
+    __delay_ms(10);         // Ensure emitters are off for 10 ms
+    return Sensors.FR - Sensors.FRNoise;
 }
 
 unsigned int ReadFL(void)
 {
     Sensors.FLNoise = SampNoise(FL_DET);
     FL_EMI = ON;
-    return SampEmi(FL_DET)-Sensors.FLNoise;
+    Sensors.FL = SampEmi(FL_DET);
+    FL_EMI = OFF;
+    __delay_ms(10);         // Ensure emitters are off for 10 ms
+    return Sensors.FL - Sensors.FLNoise;
 }
 
 unsigned int ReadSR(void)
 {
     Sensors.FLNoise = SampNoise(SR_DET);
     SR_EMI = ON;
-    return SampEmi(SR_DET)-Sensors.SRNoise;
+    Sensors.SR = SampEmi(SR_DET);
+    SR_EMI = OFF;
+    __delay_ms(10);         // Ensure emitters are off for 10 ms
+    return Sensors.SR - Sensors.SRNoise;
 }
 
 unsigned int ReadSL(void)
 {
     Sensors.SLNoise = SampNoise(SL_DET);
     SL_EMI = ON;
-    return SampEmi(SL_DET)-Sensors.SLNoise;
+    Sensors.SL = SampEmi(SL_DET);
+    SL_EMI = OFF;
+    __delay_ms(10);         // Ensure emitters are off for 10 ms
+    return Sensors.SL - Sensors.SLNoise;
 }
 
 unsigned int SampEmi(char chan)

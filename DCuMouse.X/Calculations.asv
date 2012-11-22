@@ -13,5 +13,4 @@ clc; clear all;
 % CC: Cell center
 
 syms PPR GR D C DSP; 
-format longe
 PPR=2048, GR=40/12, D=2.2, C=pi*D, DSP=C/(PPR*GR), CS=16, CC=CS/DSP,

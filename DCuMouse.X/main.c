@@ -1,5 +1,6 @@
 #include "common.h"
 #include "controller.h"
+#include "sensor.h"
 #include "led.h"
 #include "uart.h"
 
@@ -17,9 +18,14 @@ _FICD(ICS_PGD3 & JTAGEN_OFF);           // Comm Channel Select (Communicate on P
 
 int main(void)
 {
-    //InitUART();
-    //InitQEI();
+    TRISA = 0;
+    TRISC = 0;
+    TRISB = 0;
+    
+    InitUART();
     //InitLED();
+    InitADC();
+    //InitQEI();
     //InitPWM();
     //TRISB = 0;
 
@@ -28,13 +34,13 @@ int main(void)
     //TestLMotor();
     //TestRQEI();
     //TestLQEI();
-    TRISA = 0;
-    TRISB = 0;
-    PORTAbits.RA9 = 1;
-    PORTAbits.RA4 = 1;
-    PORTAbits.RA8 = 1;
-    //PORTBbits.RB4 = 1;
     
+    TRISBbits.TRISB8 = 0;
+
+    while(1)
+    {
+        printf("Front Right: %d\n", ReadSR());
+    }
     while(1);
     printf("Wheel Diameter: %0.01f\n", DIAMETER);
     printf("Circumference: %.01f\n", CIRCUMFERENCE);
