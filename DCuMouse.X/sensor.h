@@ -4,22 +4,25 @@
 #define TAD 0.000000075 // Minimum ADC Clock Period 75ns
 #define TCONV 12*TAD    // ADC Conversion Time
 
-#define ADCFR 0         // AN0 Front Right ADC
-#define ADCFL 6         // AN6 Front Left ADC
-#define ADCSR 1         // AN1 Side Right ADC
-#define ADCSL 7         // AN7 Side Left ADC
+#define ON 1
+#define OFF 0
+
+#define FR_DET 0         // AN0 Front Right ADC
+#define FL_DET 6         // AN6 Front Left ADC
+#define SR_DET 1         // AN1 Side Right ADC
+#define SL_DET 7         // AN7 Side Left ADC
 
 #define Front PORTA
-#define EmFR 0
-#define EmFL 6
-#define EmSR 1
-#define EmSL 7
+#define SR_EMI PORTAbits.RA9
+#define SL_EMI PORTAbits.RA4
+#define FL_EMI PORTBbits.RB4
+#define FR_EMI PORTAbits.RA8 
 
 struct ADC {
-    unsigned int FR; // Front Right Detector
-    unsigned int FL; // Front Left Detector
-    unsigned int SR; // Side Right Detector
-    unsigned int SL; // Side Left Detector
+    unsigned int FRNoise; // Front Right Detector
+    unsigned int FLNoise; // Front Left Detector
+    unsigned int SRNoise; // Side Right Detector
+    unsigned int SLNoise; // Side Left Detector
 };
 
 // ADC Configuration
@@ -36,11 +39,9 @@ unsigned int ReadFL(void);
 unsigned int ReadSR(void);
 unsigned int ReadSL(void);
 
-// Emitter Functions
-void OnFR(void);
-void OnFL(void);
-void OnSR(void);
-void OnSL(void);
+// Emitter Helper Functions
+unsigned int SampNoise(char chan);
+unsigned int SampEmi(char chan);
 
 // Samples and Convert Emitter Values
 void ADCDone(char d);

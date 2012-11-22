@@ -1,4 +1,5 @@
 #include "common.h"
+#include "controller.h"
 #include "led.h"
 #include "uart.h"
 
@@ -16,15 +17,30 @@ _FICD(ICS_PGD3 & JTAGEN_OFF);           // Comm Channel Select (Communicate on P
 
 int main(void)
 {
-    InitUART();
-    InitQEI();
+    //InitUART();
+    //InitQEI();
     //InitLED();
-    InitPWM();
+    //InitPWM();
     //TRISB = 0;
 
     //TestUART();
     //TestRMotor();
     //TestLMotor();
     //TestRQEI();
-    TestLQEI();
+    //TestLQEI();
+    TRISA = 0;
+    TRISB = 0;
+    PORTAbits.RA9 = 1;
+    PORTAbits.RA4 = 1;
+    PORTAbits.RA8 = 1;
+    //PORTBbits.RB4 = 1;
+    
+    while(1);
+    printf("Wheel Diameter: %0.01f\n", DIAMETER);
+    printf("Circumference: %.01f\n", CIRCUMFERENCE);
+    printf("Distance per step: %f\n", DIST_PER_STEP);
+    printf("Pulses to cell center: %f\n", ceil(CELL_CENTER));
+    if(ceil(CELL_CENTER) == 15116)
+        printf("Matches!\n");
+    while(1);
 }
