@@ -27,6 +27,9 @@
 
 // Motor Functions
 void DriveFor(unsigned int speed);
+void LTurn(unsigned int speed);
+void RTurn(unsigned int speed);
+void TurnAround(unsigned int speed);
 
 // Test functionality of motors
 void TestRMotor(void);

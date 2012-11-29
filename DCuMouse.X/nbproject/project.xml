@@ -3,8 +3,8 @@
     <type>com.microchip.mplab.nbide.embedded.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>DCuMouse</name>
-            <creation-uuid>57597479-5ca8-4de5-bfeb-e16d6e9b1508</creation-uuid>
+            <name>DCuMouse.X</name>
+            <creation-uuid>003a9684-474a-4bf9-af81-8b465052386f</creation-uuid>
             <make-project-type>0</make-project-type>
             <c-extensions>c</c-extensions>
             <cpp-extensions/>

@@ -37,10 +37,10 @@ int main(void)
     //RMotorFor();
     while(1)
     {
-        RMotorBrake();
-        LMotorBrake();
+        LTurn(PTPER);
+        __delay_ms(1000);
     }
-    
+    /*
     unsigned int speed;
     speed = PTPER/32;
     while(1)
@@ -74,5 +74,5 @@ int main(void)
     printf("Pulses to cell center: %f\n", ceil(CELL_CENTER));
     if(ceil(CELL_CENTER) == 15116)
         printf("Matches!\n");
-    while(1);
+    while(1);*/
 }

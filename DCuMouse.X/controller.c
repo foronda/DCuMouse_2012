@@ -12,6 +12,34 @@ int RTRACKTHRESHOLD = 5;
 int LTRACKTHRESHOLD = 3;
 int FRONTCENTER = 200;
 
+void LTurn(unsigned int speed)
+{
+    RMOTOR_SPEED = speed;
+    LMOTOR_SPEED = speed;
+    POS1CNT = 0;
+    POS2CNT = 0;
+    PTCONbits.PTEN = 1;         // Disable PWM
+
+    RMotorFor();
+    LMotorRev();
+    printf("Starting turn.\n");
+
+    while(1024 <= abs(POS1CNT) || (1024 <= POS2CNT))
+    {
+        printf("POS2CNT: %d \n", POS2CNT);
+        RMOTOR_SPEED = speed+20;
+        LMOTOR_SPEED = speed+20;
+        if(speed >= PTPER/2)
+            speed = PTPER/2;
+    }
+    printf("Done turn.\n");
+    RMotorStop();
+    LMotorStop();
+}
+
+void RTurn(unsigned int speed);
+void TurnAround(unsigned int speed);
+
 // Test Functions
 void TestRQEI(void)
 {
@@ -115,7 +143,7 @@ void RMotorStop(void)
 {
     RMOTOR_SPEED = 0;
 }
-void RMotorBreak(void)
+void RMotorBrake(void)
 {
     PTCONbits.PTEN = 0;         // Disable PWM
     PORTBbits.RB14 = 1;         // Lock wheels by supplying
