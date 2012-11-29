@@ -18,15 +18,15 @@ _FICD(ICS_PGD3 & JTAGEN_OFF);           // Comm Channel Select (Communicate on P
 
 int main(void)
 {
-    TRISA = 0;
-    TRISC = 0;
-    TRISB = 0;
+    //TRISA = 0;
+    //TRISC = 0;
+    //TRISB = 0;
     
     InitUART();
     //InitLED();
-    InitADC();
-    //InitQEI();
-    //InitPWM();
+    //InitADC();
+    InitQEI();
+    InitPWM();
     //TRISB = 0;
 
     //TestUART();
@@ -34,13 +34,32 @@ int main(void)
     //TestLMotor();
     //TestRQEI();
     //TestLQEI();
-    
-    TRISBbits.TRISB8 = 0;
-
+    //RMotorFor();
+    unsigned int speed;
+    speed = PTPER/32;
     while(1)
     {
-        printf("Front Right: %d\n", ReadSR());
+        DriveFor(speed);
+        printf("POS1CNT: %d\n\n", POS1CNT);
+
+        if((8192 <= abs(POS1CNT)) || (8192 <= POS2CNT))
+        {
+            POS1CNT=0;
+            POS2CNT=0;
+            //StopMotors();
+            //__delay_ms(500);
+            //speed = PTPER/32;
+        }
+        else
+        {
+            speed=speed+5;
+            if(speed >= PTPER/10)
+                speed = PTPER/10;
+        }
+
     }
+
+
     while(1);
     printf("Wheel Diameter: %0.01f\n", DIAMETER);
     printf("Circumference: %.01f\n", CIRCUMFERENCE);

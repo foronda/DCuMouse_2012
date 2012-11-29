@@ -18,6 +18,8 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 #include "common.h"
+#include "interrupts.h"
+#include "sensor.h"
 
 void TestRMotor(void);
 void TestLMotor(void);
@@ -29,6 +31,44 @@ void RMotorStop(void);
 void LMotorFor(void);
 void LMotorRev(void);
 void LMotorStop(void);
+
+void DriveFor(unsigned int speed);
+
+// Controller Struct declaration
+struct Controller
+{
+    int ePrev;
+    int Proportional;
+    int Derivative;
+    int PDError;
+};
+
+// Controller Functions
+void PDTrack(int RightAverage, int LeftAverage);
+void PDTrackRight(int RightAverage);
+void PDTrackLeft(int LeftAverage);
+
+// PID Calculators
+void CalculatePD(int Average, char Side);
+void Proportional(int Average, char Side);
+void Derivative();
+
+// Initializers
+void InitPD();
+void ClearPDError();
+
+// Accessor Functions
+int GetPrevError();
+int GetPDError();
+int GetP();
+int GetD();
+
+// Mutator Functions
+void SetPrevError(int eP);
+void SetPDError(int PD);
+void SetP(int P);
+void SetD(int D);
+
 
 #endif
 

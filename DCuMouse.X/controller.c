@@ -2,20 +2,32 @@
 #include "common.h"
 #include "pwm.h"
 
+struct Controller PID;
+
+// Controller Gain Constants
+#define Kp 8 //5
+#define Kd 1 //1
+
+int RTRACKTHRESHOLD = 5;
+int LTRACKTHRESHOLD = 3;
+int FRONTCENTER = 200;
+
 // Test Functions
 void TestRQEI(void)
 {
     __delay_ms(2000);
-    RMOTOR_SPEED = PTPER/32;
+    RMOTOR_SPEED = PTPER/8;
     RMotorFor();
     while(1)
     {
-        if(POS1CNT%QUARTER_ROT == 0)
+        //printf("Right Motor Count: %d\n", POS1CNT);
+        if(abs(POS1CNT)%(6827) == 0)
         {
             printf("Right Motor Count: %d\n", POS1CNT);
+            //POS1CNT = 0;
             RMOTOR_SPEED = 0;
             __delay_ms(1000);
-            RMOTOR_SPEED = PTPER/32;
+            RMOTOR_SPEED = PTPER/8;
         }
     }
 }
@@ -42,7 +54,7 @@ void TestRMotor(void)
         printf("PDC1: %d\n", PDC2);
         RMotorStop();
         __delay_ms(2000);
-        RMOTOR_SPEED = PTPER/16;
+        RMOTOR_SPEED = PTPER/8;
         RMotorFor();
         __delay_ms(2000);
         RMotorStop();
@@ -74,12 +86,27 @@ void TestLMotor(void)
 
 
 // Right Motor Functions
-void RMotorFor(void)
+
+void DriveFor(unsigned int speed)
+{
+    PDC2 = speed;
+    PDC1 = speed;
+    RMotorFor();
+    LMotorFor();
+}
+
+void StopMotors(void)
+{
+    RMotorStop();
+    LMotorStop();
+}
+
+void RMotorRev(void)
 {
     PWMCON1bits.PEN1L = 0;
     PWMCON1bits.PEN1H = 1;
 }
-void RMotorRev(void)
+void RMotorFor(void)
 {
     PWMCON1bits.PEN1L = 1;
     PWMCON1bits.PEN1H = 0;
@@ -90,13 +117,13 @@ void RMotorStop(void)
 }
 
 // Left Motor Functions
-void LMotorFor(void)
+void LMotorRev(void)
 {
     PWMCON1bits.PEN2L = 1;
     PWMCON1bits.PEN2H = 0;
 }
 
-void LMotorRev(void)
+void LMotorFor(void)
 {
     PWMCON1bits.PEN2L = 0;
     PWMCON1bits.PEN2H = 1;

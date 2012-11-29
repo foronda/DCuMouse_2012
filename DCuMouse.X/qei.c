@@ -6,6 +6,7 @@ void InitQEI(void)
     InitRQEI();
     InitLQEI();
 }
+
 void InitRQEI(void)
 {
     /********** QEI1CON 16-bit Register (Section 15. p.5) **********/
@@ -35,8 +36,9 @@ void InitRQEI(void)
     /********** MAX1CNT 16-bit Register  **********/
     // Register associated with a comparator for comparing POS1CNT counter
 
-    MAX1CNT = 2048;                 // Sets maximum count to 512x4 = 2048 resolution for IE-512 encoder
-
+    //MAX1CNT = 2048;                 // Sets maximum count to 512x4 = 2048 resolution for IE-512 encoder
+    //MAX1CNT = 6827;
+    
     /********** Interrupt Registers Configuration **********/
     //IFS3bits.QEI1IF = 0;            // Clears QEI1 Interrupt Flag
     //IPC14bits.QEI1IP = 7;           // Interrupt Has the highest priority (QEI1IP <2:0>)
@@ -56,7 +58,7 @@ void InitLQEI(void)
 
     QEI2CONbits.QEISIDL = 0;        // Continue module operation in idle mode
     QEI2CONbits.CNTERR = 0;         // Clear any count errors
-    QEI2CONbits.UPDN = 0;           // Position Counter Direction is negative (-)
+    QEI2CONbits.UPDN = 1;           // Position Counter Direction is negative (-)
                                     // Left Motor For is opposite from Right Motor For
     QEI2CONbits.SWPAB= 0;           // QEA and QEB not swapped, A leads B
     QEI2CONbits.INDX = 1;           // Read only - Index pin state status pin.
@@ -74,12 +76,12 @@ void InitLQEI(void)
     /********** POS1CNT 16-bit Register  **********/
     // Allows reading and writing of the position counter
 
-    POS2CNT = 2048;                    // Initialize Position Counter => 0
-
+    //POS2CNT = 2048;                    // Initialize Position Counter => 0
+    POS2CNT = 0;
     /********** MAX1CNT 16-bit Register  **********/
     // Register associated with a comparator for comparing POS1CNT counter
 
-    MAX2CNT = 0;                   // Sets maximum count to 512x4 = 2048/rev resolution for IE-512 encoder
+    //MAX2CNT = 0;                   // Sets maximum count to 512x4 = 2048/rev resolution for IE-512 encoder
 
     /********** Interrupt Registers Configuration **********/
     //IFS4bits.QEI2IF = 0;            // Clears QEI2 Interrupt Flag
