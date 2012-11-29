@@ -145,6 +145,7 @@ void RMotorStop(void)
 }
 void RMotorBrake(void)
 {
+    // Doesn't work, will run at full speed.
     PTCONbits.PTEN = 0;         // Disable PWM
     PORTBbits.RB14 = 1;         // Lock wheels by supplying
     PORTBbits.RB15 = 1;         // ++ to both motor wires.

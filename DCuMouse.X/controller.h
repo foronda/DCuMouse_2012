@@ -47,7 +47,12 @@ void LMotorRev(void);
 void LMotorStop(void);
 void LMotorBrake(void);
 
-// Controller Struct declaration
+
+/*****************************************/
+/****** Start PD Controller Section ******/
+/*****************************************/
+// Creates PD Controller struct
+
 struct Controller
 {
     int ePrev;
