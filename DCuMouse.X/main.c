@@ -27,6 +27,7 @@ int main(void)
     //InitADC();
     InitQEI();
     InitPWM();
+    InitPD();
     //TRISB = 0;
 
     //TestUART();

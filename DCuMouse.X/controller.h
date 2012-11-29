@@ -1,3 +1,4 @@
+// PWM Duty cycle registers
 #define RMOTOR_SPEED PDC1
 #define LMOTOR_SPEED PDC2
 
@@ -18,6 +19,14 @@
 // Values are x1, x4, x16
 #define Prescalar 1
 
+// Controller Gain Constants
+#define Kp 8
+#define Kd 1
+
+// Motor Speeds
+#define STARTING_SPEED PTPER/32
+#define MAX_SPEED PTPER/2
+
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 #include "common.h"
@@ -27,6 +36,7 @@
 
 // Motor Functions
 void DriveFor(unsigned int speed);
+void DriveRev(unsigned int speed);
 void LTurn(unsigned int speed);
 void RTurn(unsigned int speed);
 void TurnAround(unsigned int speed);
@@ -48,17 +58,17 @@ void LMotorStop(void);
 void LMotorBrake(void);
 
 
-/*****************************************/
-/****** Start PD Controller Section ******/
-/*****************************************/
-// Creates PD Controller struct
+/**************************************************************/
+/***************** START OF PD CONTROLLER *********************/
+/**************************************************************/
 
+// Creates PD Controller struct
 struct Controller
 {
-    int ePrev;
-    int Proportional;
-    int Derivative;
-    int PDError;
+    int ePrev;          // Previous error
+    int Proportional;   // Calculated Proportional value
+    int Derivative;     // Calculated Derivative value
+    int PDError;        
 };
 
 // Controller Functions
