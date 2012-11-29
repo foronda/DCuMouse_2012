@@ -35,6 +35,12 @@ int main(void)
     //TestRQEI();
     //TestLQEI();
     //RMotorFor();
+    while(1)
+    {
+        RMotorBrake();
+        LMotorBrake();
+    }
+    
     unsigned int speed;
     speed = PTPER/32;
     while(1)

@@ -115,6 +115,12 @@ void RMotorStop(void)
 {
     RMOTOR_SPEED = 0;
 }
+void RMotorBreak(void)
+{
+    PTCONbits.PTEN = 0;         // Disable PWM
+    PORTBbits.RB14 = 1;         // Lock wheels by supplying
+    PORTBbits.RB15 = 1;         // ++ to both motor wires.
+}
 
 // Left Motor Functions
 void LMotorRev(void)
@@ -132,4 +138,11 @@ void LMotorFor(void)
 void LMotorStop(void)
 {
     LMOTOR_SPEED = 0;
+}
+
+void LMotorBrake(void)
+{
+    PTCONbits.PTEN = 0;         // Disable PWM
+    PORTBbits.RB10 = 1;         // Lock
+    PORTBbits.RB11 = 1;
 }
