@@ -15,6 +15,7 @@
 #define CELL_SIZE 16                    // 16cm cell size
 #define CELL_CENTER 15804               // Distance from cell center to next (Cent = cell_size/dist_per_step)
 
+// v^2 = vo^2 + 2a(r - ro)              // Acceleration/Deceleration Profile
 // Prescalar value for adjusting timer speeds
 // Values are x1, x4, x16
 #define Prescalar 1

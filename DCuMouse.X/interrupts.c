@@ -36,6 +36,10 @@ void InitLMotorTimer()
     T2CONbits.TON=1;        // Starts Timer2
 }
 
+void InitKinematicsTimer()
+{
+
+}
 // Motor Interrupt Functions
 // Currently just have basic timer configuration
 // Will need to implement PD controller into interrupts
@@ -52,6 +56,7 @@ void __attribute__((__interrupt__)) _T2Interrupt(void)
                         //the CPU will keep vectoring back to the ISR
 }
 
+// In this interrupt, kinematic equations will be used to calculate velocity and acceleration.
 void __attribute__((__interrupt__)) _T3Interrupt(void)
 {
     IFS0bits.T3IF = 0;  //Clear the INT3 interrupt flag or else
