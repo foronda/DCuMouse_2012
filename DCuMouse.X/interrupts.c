@@ -48,7 +48,13 @@ void __attribute__((__interrupt__)) _T1Interrupt(void)
 
 void __attribute__((__interrupt__)) _T2Interrupt(void)
 {
-    IFS0bits.T2IF = 0;  //Clear the INT1 interrupt flag or else
+    IFS0bits.T2IF = 0;  //Clear the INT3 interrupt flag or else
+                        //the CPU will keep vectoring back to the ISR
+}
+
+void __attribute__((__interrupt__)) _T3Interrupt(void)
+{
+    IFS0bits.T3IF = 0;  //Clear the INT3 interrupt flag or else
                         //the CPU will keep vectoring back to the ISR
 }
 

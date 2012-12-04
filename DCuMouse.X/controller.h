@@ -41,22 +41,26 @@ void LTurn(unsigned int speed);
 void RTurn(unsigned int speed);
 void TurnAround(unsigned int speed);
 
+// Motor Helper functions
+void ClearPos(void);
+
 // Test functionality of motors
 void TestRMotor(void);
 void TestLMotor(void);
 
 // Right Motor Functions
-void RMotorFor(void);
-void RMotorRev(void);
+void RMotorFor(unsigned int speed);
+void RMotorRev(unsigned int speed);
 void RMotorStop(void);
 void RMotorBrake(void);
+void RClearPos(void);
 
 // Left Motor Functions
-void LMotorFor(void);
-void LMotorRev(void);
+void LMotorFor(unsigned int speed);
+void LMotorRev(unsigned int speed);
 void LMotorStop(void);
 void LMotorBrake(void);
-
+void LClearPos(void);
 
 /**************************************************************/
 /***************** START OF PD CONTROLLER *********************/

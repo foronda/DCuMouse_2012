@@ -38,8 +38,8 @@ int main(void)
     //RMotorFor();
     while(1)
     {
-        LTurn(PTPER);
-        __delay_ms(1000);
+        RTurn(PTPER/4);
+        __delay_ms(2000);
     }
     /*
     unsigned int speed;

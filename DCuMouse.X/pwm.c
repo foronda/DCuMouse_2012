@@ -23,6 +23,8 @@ void InitPWM(void)
     PTCONbits.PTMOD = 0;        // PWM operates in free-running Mode continuously (PTMOD <1:0>)
     PTMR = 0;                   // PWM counter value, start at 0 (PTMR <14:0>)
     PTPER = 1023;               // PWM Timebase period, determines PWM frequency (PTPER <14:0>)
+                                // PxDCY Value for 100% Duty Cycle PTPER*2 (2047)
+                                // Gives 11 bits of PWM Resolution, See Table 14-1
 
     /*~~~~~~~~~~~~~~ PWM1 Configuration ~~~~~~~~~~~~~~~~~~~~~~~*/
     /*~~~~~~~~~~~~~~ Page 220 of datasheet ~~~~~~~~~~~~~~~~~~~~*/

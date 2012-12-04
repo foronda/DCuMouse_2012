@@ -14,7 +14,7 @@ void InitRQEI(void)
 
     QEI1CONbits.QEISIDL = 0;        // Continue module operation in idle mode
     QEI1CONbits.CNTERR = 0;         // Clear any count errors
-    QEI1CONbits.UPDN = 1;           // Position Counter Direction is positive (+)
+    //QEI1CONbits.UPDN = 1;           // Position Counter Direction is positive (+)
     QEI1CONbits.SWPAB= 0;           // QEA and QEB not swapped, A leads B
     QEI1CONbits.INDX = 1;           // Read only - Index pin state status pin.
     QEI1CONbits.POSRES = 0;         // No index pulse reset
@@ -96,14 +96,30 @@ void InitLQEI(void)
     RPINR16bits.QEB2R = 1;         // QEI2B Input tied to RP1 (QEB2R<4:0> Pin 22)
 }
 
+void StartRQEIInt()
+{
+    // Configure interrupt to stop motors once MAXCNT has been reached
+    IFS3bits.QEI1IF = 0;        // Clears QEI1 Interrupt Flag
+    IPC14bits.QEI1IP = 7;       // Interrupt Has the highest priority (QEI1IP <2:0>)
+    IEC3bits.QEI1IE = 1;        // Enables Interrupt for QEI, occurs when POS1CNT == MAX1CNT
+}
+
+void StopRQEIInt()
+{
+
+}
 
 void __attribute__((__interrupt__, no_auto_psv)) _QEI1Interrupt (void)
 {
+    RMotorStop();
+    LMotorStop();
     IFS3bits.QEI1IF = 0;        // Clears QEI1 Interrupt Flag
 }
 
 void __attribute__((__interrupt__, no_auto_psv)) _QEI2Interrupt (void)
 {
+    LMotorStop();
+    RMotorStop();
     IFS4bits.QEI2IF = 0;        // Clears QEI2 Interrupt Flag
 }
 

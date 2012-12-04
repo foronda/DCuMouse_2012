@@ -2,27 +2,27 @@
 #include "common.h"
 #include "pwm.h"
 
+#define TURN_COUNT 3400         // QEI Counts needed to complete a turn 90deg turn
+#define TURN_SPEED PTPER/4     // 25% Duty Cycle to match turn count
+
 struct Controller PID;
 
 int RTRACKTHRESHOLD = 5;
 int LTRACKTHRESHOLD = 3;
 int FRONTCENTER = 200;
 
+
 // Motor Functions
 void DriveFor(unsigned int speed)
 {
-    PDC2 = speed;
-    PDC1 = speed;
-    RMotorFor();
-    LMotorFor();
+    RMotorFor(speed);
+    LMotorFor(speed);
 }
 
 void DriveRev(unsigned int speed)
 {
-    PDC1 = speed;
-    PDC2 = speed;
-    RMotorRev();
-    LMotorRev();
+    RMotorRev(speed);
+    LMotorRev(speed);
 }
 
 void StopMotors(void)
@@ -33,38 +33,61 @@ void StopMotors(void)
 
 void LTurn(unsigned int speed)
 {
-    RMOTOR_SPEED = speed;
-    LMOTOR_SPEED = speed;
-    POS1CNT = 0;
-    POS2CNT = 0;
-    PTCONbits.PTEN = 1;         // Disable PWM
+    // Must Configure QEI interrupts to be accurate in QEI counts.
+    POS1CNT = TURN_COUNT;
+    QEI1CONbits.UPDN = 1;       // Have RQEI Count Down (-)
 
-    RMotorFor();
-    LMotorRev();
-    printf("Starting turn.\n");
+    // Configure interrupt to stop motors once MAXCNT has been reached
+    IFS3bits.QEI1IF = 0;        // Clears QEI1 Interrupt Flag
+    IPC14bits.QEI1IP = 7;       // Interrupt Has the highest priority (QEI1IP <2:0>)
+    IEC3bits.QEI1IE = 1;        // Enables Interrupt for QEI, occurs when POS1CNT == MAX1CNT
 
-    while(1024 <= abs(POS1CNT) || (1024 <= POS2CNT))
-    {
-        printf("POS2CNT: %d \n", POS2CNT);
-        RMOTOR_SPEED = speed+20;
-        LMOTOR_SPEED = speed+20;
-        if(speed >= PTPER/2)
-            speed = PTPER/2;
-    }
-    printf("Done turn.\n");
-    RMotorStop();
-    LMotorStop();
+    // Set QEI Count value needed to execute a turn
+    MAX1CNT = 0;
+    
+    PTCONbits.PTEN = 1;         // Enable PWM
+    RMotorFor(speed);
+    LMotorRev(speed);
 }
 
-void RTurn(unsigned int speed);
-void TurnAround(unsigned int speed);
+void RTurn(unsigned int speed)
+{
+    POS2CNT = 0;
+    QEI2CONbits.UPDN = 0;           // Have LQEI Count Down (-)
+
+    // Configure interrupt to stop motors once MAXCNT has been reached
+    IFS4bits.QEI2IF = 0;            // Clears QEI2 Interrupt Flag
+    IPC18bits.QEI2IP = 7;           // Interrupt Has the highest priority (QEI2IP <2:0>)
+    IEC4bits.QEI2IE = 1;            // Enables Interrupt for QEI, occurs when POS2CNT == MAX2CNT
+
+    // Set QEI Count value needed to execute a 90deg turn
+    MAX2CNT = TURN_COUNT;
+
+    PTCONbits.PTEN = 1;
+    RMotorRev(speed);
+    LMotorFor(speed);
+}
+
+void TurnAround(unsigned int speed)
+{
+    LTurn(TURN_SPEED);
+    __delay_ms(500);
+    LTurn(TURN_SPEED);
+    __delay_ms(500);
+}
+
+void ClearPos(void)
+{
+    LClearPos();
+    RClearPos();
+}
 
 // Test Functions
 void TestRQEI(void)
 {
     __delay_ms(2000);
     RMOTOR_SPEED = PTPER/8;
-    RMotorFor();
+    RMotorFor(PTPER/8);
     while(1)
     {
         //printf("Right Motor Count: %d\n", POS1CNT);
@@ -72,25 +95,24 @@ void TestRQEI(void)
         {
             printf("Right Motor Count: %d\n", POS1CNT);
             //POS1CNT = 0;
-            RMOTOR_SPEED = 0;
+            RMotorStop();
             __delay_ms(1000);
-            RMOTOR_SPEED = PTPER/8;
+            RMotorFor(PTPER/8);
         }
     }
 }
 void TestLQEI(void)
 {
-        __delay_ms(2000);
-    LMOTOR_SPEED = PTPER/32;
-    LMotorFor();
+    __delay_ms(2000);
+    LMotorFor(PTPER/32);
     while(1)
     {
         if(POS2CNT%QUARTER_ROT == 0)
         {
             printf("Left Motor Count: %d\n", POS2CNT);
-            LMOTOR_SPEED = 0;
+            LMotorStop();
             __delay_ms(1000);
-            LMOTOR_SPEED = PTPER/32;
+            LMotorFor(PTPER/32);
         }
     }
 }
@@ -101,14 +123,11 @@ void TestRMotor(void)
         printf("PDC1: %d\n", PDC2);
         RMotorStop();
         __delay_ms(2000);
-        RMOTOR_SPEED = PTPER/8;
-        RMotorFor();
+        RMotorFor(PTPER/8);
         __delay_ms(2000);
         RMotorStop();
         __delay_ms(1000);
-        //__delay_ms(2000);
-        RMOTOR_SPEED = PTPER/16;
-        RMotorRev();
+        RMotorRev(PTPER/16);
         __delay_ms(2000);
     }
 }
@@ -119,28 +138,26 @@ void TestLMotor(void)
     {
         LMotorStop();
         __delay_ms(2000);
-        LMOTOR_SPEED = PTPER/16;
-        LMotorFor();
+        LMotorFor(PTPER/16);
         __delay_ms(2000);
         LMotorStop();
         __delay_ms(1000);
-        //__delay_ms(2000);
-        LMOTOR_SPEED = PTPER/16;
-        LMotorRev();
+        LMotorRev(PTPER/16);
         __delay_ms(2000);
     }
 }
 
 
 // Right Motor Functions
-
-void RMotorRev(void)
+void RMotorRev(unsigned int speed)
 {
+    RMOTOR_SPEED = speed;
     PWMCON1bits.PEN1L = 0;
     PWMCON1bits.PEN1H = 1;
 }
-void RMotorFor(void)
+void RMotorFor(unsigned int speed)
 {
+    RMOTOR_SPEED = speed;
     PWMCON1bits.PEN1L = 1;
     PWMCON1bits.PEN1H = 0;
 }
@@ -152,19 +169,25 @@ void RMotorBrake(void)
 {
     // Doesn't work, will run at full speed.
     PTCONbits.PTEN = 0;         // Disable PWM
-    PORTBbits.RB14 = 1;         // Lock wheels by supplying
-    PORTBbits.RB15 = 1;         // ++ to both motor wires.
+    PORTBbits.RB14 = 0;         // Lock wheels by supplying
+    PORTBbits.RB15 = 0;         // -- to both motor wires.
+}
+void RClearPos()
+{
+    POS1CNT = 0;
 }
 
 // Left Motor Functions
-void LMotorRev(void)
+void LMotorRev(unsigned int speed)
 {
+    LMOTOR_SPEED = speed;
     PWMCON1bits.PEN2L = 1;
     PWMCON1bits.PEN2H = 0;
 }
 
-void LMotorFor(void)
+void LMotorFor(unsigned int speed)
 {
+    LMOTOR_SPEED = speed;
     PWMCON1bits.PEN2L = 0;
     PWMCON1bits.PEN2H = 1;
 }
@@ -179,6 +202,10 @@ void LMotorBrake(void)
     PTCONbits.PTEN = 0;         // Disable PWM
     PORTBbits.RB10 = 1;         // Lock
     PORTBbits.RB11 = 1;
+}
+void LClearPos(void)
+{
+    POS2CNT = 0;
 }
 
 
@@ -265,6 +292,9 @@ void PDTrackLeft(int LeftAverage)
 }
 
 // Move mouse forward until in center, using Front sensors for guide
+// LOL
+// new function... void MoonWalkToFront()
+
 void AlignToFront()
 {
     // Stub function
@@ -302,10 +332,7 @@ void InitPD()
 
 void ClearPDError()
 {
-    SetPrevError(0);
-    SetPDError(0);
-    SetP(0);
-    SetD(0);
+    InitPD();
 }
 
 // Controller Accessor Functions
