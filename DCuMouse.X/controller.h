@@ -5,15 +5,15 @@
 // QEI counts for counting rotations
 #define QUARTER_ROT 512                 // Pulse count per quarter revolution
 #define HALF_ROT 1024                   // Pulse count per half revolution
-#define ONE_ROT 2048                    // Pulse count per one revolution
+#define PPR 2048                        // Pulse count per one revolution
 
 // Kinematics Calculations
 #define GEAR_RATIO 3.333                // Gear Ratio 40:12, 3.33 rev/w_rev
-#define DIAMETER 2.2                    // 2.2 cm wheel diameter
-#define CIRCUMFERENCE 6.91              // Distance traveled per revolution (C = pi*d)
-#define DIST_PER_STEP 0.00101242        // Distance traveled per QEI pulse  (D = (pi*d)/(ONE_ROT*GEAR_RATIO))
-#define CELL_SIZE 16                    // 16cm cell size
-#define CELL_CENTER 15804               // Distance from cell center to next (Cent = cell_size/dist_per_step)
+#define DIAMETER 22                     // 22 mm wheel diameter
+#define CIRCUMFERENCE 69.1              // Distance traveled per revolution (C = pi*d)
+#define DIST_PER_STEP 0.0101242         // Distance traveled per QEI pulse  (D = (pi*d)/(PPR*GEAR_RATIO))
+#define CELL_SIZE 160                   // 160mm cell size
+#define CELL_CENTER 14836//15804               // Steps takes to reach cell center (Cent = cell_size/dist_per_step)
 
 // v^2 = vo^2 + 2a(r - ro)              // Acceleration/Deceleration Profile
 // Prescalar value for adjusting timer speeds
@@ -35,12 +35,17 @@
 #include "sensor.h"
 #include "pwm.h"
 
+/**************************************************************/
+/**************** START OF MOTOR FUNCTIONS ********************/
+/**************************************************************/
+
 // Motor Functions
 void DriveFor(unsigned int speed);
 void DriveRev(unsigned int speed);
 void LTurn(unsigned int speed);
 void RTurn(unsigned int speed);
 void TurnAround(unsigned int speed);
+void DriveOneCell(void);
 
 // Motor Helper functions
 void ClearPos(void);
@@ -62,6 +67,12 @@ void LMotorRev(unsigned int speed);
 void LMotorStop(void);
 void LMotorBrake(void);
 void LClearPos(void);
+
+/************************************************************/
+/**************** END OF MOTOR FUNCTIONS ********************/
+/************************************************************/
+
+
 
 /**************************************************************/
 /***************** START OF PD CONTROLLER *********************/
@@ -102,6 +113,35 @@ void SetPDError(int PD);
 void SetP(int P);
 void SetD(int D);
 
+/****************************************************/
+/************* END OF PD CONTROLLER *****************/
+/****************************************************/
+
+
+
+/**************************************************************/
+/***************** START OF KINEMATICS ************************/
+/**************************************************************/
+struct Kinematics
+{
+    float Dold;
+    float Dnew;
+    float Vold;
+    float Vnew;
+    float Accel;
+};
+
+void InitKinematics(void);
+
+float GetDistance(unsigned int count);
+float CalcVelocity(float deltaX, float deltaT);
+float CalcAccel(float deltaV, float deltaT);
+
+void Accel(unsigned int Vf, unsigned int Vo);
+
+/**************************************************************/
+/****************** END OF KINEMATICS *************************/
+/**************************************************************/
 
 #endif
 

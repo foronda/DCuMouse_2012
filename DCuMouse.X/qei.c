@@ -1,5 +1,6 @@
 #include "qei.h"
 #include "controller.h"
+char count = 0;
 
 void InitQEI(void)
 {
@@ -111,15 +112,25 @@ void StopRQEIInt()
 
 void __attribute__((__interrupt__, no_auto_psv)) _QEI1Interrupt (void)
 {
-    RMotorStop();
     LMotorStop();
+    RMotorStop();
+    printf("Count: %d\n", count);
+    count++;
+    __delay_ms(1000);
+    if(count <=2)
+    {
+        DriveOneCell();
+    }
+    else
+    {
+        LMotorStop();
+        RMotorStop();
+    }
     IFS3bits.QEI1IF = 0;        // Clears QEI1 Interrupt Flag
 }
 
 void __attribute__((__interrupt__, no_auto_psv)) _QEI2Interrupt (void)
 {
-    LMotorStop();
-    RMotorStop();
     IFS4bits.QEI2IF = 0;        // Clears QEI2 Interrupt Flag
 }
 

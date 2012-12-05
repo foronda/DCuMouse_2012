@@ -3,6 +3,7 @@
 #include "sensor.h"
 #include "led.h"
 #include "uart.h"
+#include "interrupts.h"
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~ Configuration Bits ~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -28,6 +29,9 @@ int main(void)
     InitQEI();
     InitPWM();
     InitPD();
+    InitKinematics();
+    InitKinematicsTimer();
+    
     //TRISB = 0;
 
     //TestUART();
@@ -36,10 +40,15 @@ int main(void)
     //TestRQEI();
     //TestLQEI();
     //RMotorFor();
+    __delay_ms(1000);
+
+    DriveOneCell();
+
     while(1)
     {
-        RTurn(PTPER/4);
-        __delay_ms(2000);
+       //printf("POS1CNT: %d\n", abs(POS1CNT));
+        //printf("Distance traveled: %f\n", GetDistance(abs(POS1CNT)));
+        //printf("Velocity (m/s):%f\n", CalcVelocity(50,250));
     }
     /*
     unsigned int speed;

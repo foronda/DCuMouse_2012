@@ -14,4 +14,4 @@ clc; clear all;
 
 syms PPR GR D C DSP; 
 format longe
-PPR=2048, GR=40/12, D=2.2, C=pi*D, DSP=C/(PPR*GR), CS=16, CC=CS/DSP,
+PPR=2048, GR=40/12, D=22, C=pi*D, DSP=C/(PPR*GR), CS=160, CC=CS/DSP,

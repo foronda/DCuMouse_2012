@@ -13,6 +13,25 @@ int FRONTCENTER = 200;
 
 
 // Motor Functions
+void DriveOneCell(void)
+{
+    POS1CNT = CELL_CENTER;
+    QEI1CONbits.UPDN = 1;       // Have RQEI Count Down (-)
+    
+     // Configure interrupt to stop motors once MAXCNT has been reached
+    IFS3bits.QEI1IF = 0;        // Clears QEI1 Interrupt Flag
+    IPC14bits.QEI1IP = 7;       // Interrupt Has the highest priority (QEI1IP <2:0>)
+    IEC3bits.QEI1IE = 1;        // Enables Interrupt for QEI, occurs when POS1CNT == MAX1CNT
+
+    // Set QEI Count value needed to execute a turn
+    MAX1CNT = 0;
+
+    PTCONbits.PTEN = 1;         // Enable PWM
+    
+    DriveFor(PTPER/6);
+}
+
+
 void DriveFor(unsigned int speed)
 {
     RMotorFor(speed);
@@ -363,4 +382,30 @@ void SetD(int D)
 
 /**************************************************************/
 /************* END OF PD CONTROLLER FUNCTIONS *****************/
+/**************************************************************/
+
+
+/**************************************************************/
+/***************** START OF KINEMATICS ************************/
+/**************************************************************/
+
+float GetDistance(unsigned int count)
+{
+    return (float)DIST_PER_STEP*count;
+}
+
+// Distance is in mm, Time is in ms, Velocity = m/s
+float CalcVelocity(float deltaX, float deltaT)
+{
+    return deltaX/deltaT;
+}
+
+float CalcAccel(float deltaV, float deltaT)
+{
+    return deltaV/deltaT;
+}
+
+void Accel(unsigned int Vf, unsigned int Vo);
+/**************************************************************/
+/****************** END OF KINEMATICS *************************/
 /**************************************************************/
