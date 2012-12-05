@@ -19,20 +19,20 @@ _FICD(ICS_PGD3 & JTAGEN_OFF);           // Comm Channel Select (Communicate on P
 
 int main(void)
 {
-    //TRISA = 0;
-    //TRISC = 0;
-    //TRISB = 0;
+    TRISA = 0;
+    TRISC = 0;
+    TRISB = 0;
     
     InitUART();
     //InitLED();
-    //InitADC();
-    InitQEI();
-    InitPWM();
-    InitPD();
-    InitKinematics();
-    InitKinematicsTimer();
+    InitADC();
+    //InitQEI();
+    //InitPWM();
+    //InitPD();
+    //InitKinematics();
+    //InitKinematicsTimer();
     
-    //TRISB = 0;
+    TRISB = 0;
 
     //TestUART();
     //TestRMotor();
@@ -40,12 +40,13 @@ int main(void)
     //TestRQEI();
     //TestLQEI();
     //RMotorFor();
-    __delay_ms(1000);
+    //__delay_ms(1000);
 
-    DriveOneCell();
+    //DriveOneCell();
 
     while(1)
     {
+        CalibrateSensors();
        //printf("POS1CNT: %d\n", abs(POS1CNT));
         //printf("Distance traveled: %f\n", GetDistance(abs(POS1CNT)));
         //printf("Velocity (m/s):%f\n", CalcVelocity(50,250));

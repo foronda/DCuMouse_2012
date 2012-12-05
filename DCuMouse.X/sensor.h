@@ -44,11 +44,19 @@ unsigned int ReadFL(void);
 unsigned int ReadSR(void);
 unsigned int ReadSL(void);
 
+// Sensor Mutator Functions
+unsigned int LinearizeFR(unsigned int adc);
+unsigned int LinearizeSR(unsigned int adc);
+unsigned int LinearizeFL(unsigned int adc);
+unsigned int LinearizeSL(unsigned int adc);
+
 // Emitter Helper Functions
 unsigned int SampNoise(char chan);
 unsigned int SampEmi(char chan);
+void CalibrateSensors(void);
 
 // Samples and Convert Emitter Values
 void ADCDone(char d);
+
 
 #endif	/* SENSOR_H */
