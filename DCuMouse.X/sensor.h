@@ -8,9 +8,9 @@
 #define OFF 0
 
 #define FR_DET 0         // AN0 Front Right ADC
-#define FL_DET 6         // AN6 Front Left ADC
+#define FL_DET 7         // AN7 Front Left ADC
 #define SR_DET 1         // AN1 Side Right ADC
-#define SL_DET 7         // AN7 Side Left ADC
+#define SL_DET 6         // AN6 Side Left ADC
 
 #define Front PORTA
 #define SR_EMI PORTAbits.RA9
@@ -46,9 +46,9 @@ unsigned int ReadSL(void);
 
 // Sensor Mutator Functions
 unsigned int LinearizeFR(unsigned int adc);
-unsigned int LinearizeSR(unsigned int adc);
-unsigned int LinearizeFL(unsigned int adc);
-unsigned int LinearizeSL(unsigned int adc);
+float LinearizeSR(unsigned int adc);
+float LinearizeFL(unsigned int adc);
+float LinearizeSL(unsigned int adc);
 
 // Emitter Helper Functions
 unsigned int SampNoise(char chan);
