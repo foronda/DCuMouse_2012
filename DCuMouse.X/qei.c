@@ -15,7 +15,7 @@ void InitRQEI(void)
 
     QEI1CONbits.QEISIDL = 0;        // Continue module operation in idle mode
     QEI1CONbits.CNTERR = 0;         // Clear any count errors
-    //QEI1CONbits.UPDN = 1;           // Position Counter Direction is positive (+)
+    QEI1CONbits.UPDN = 1;           // Position Counter Direction is positive (+)
     QEI1CONbits.SWPAB= 0;           // QEA and QEB not swapped, A leads B
     QEI1CONbits.INDX = 1;           // Read only - Index pin state status pin.
     QEI1CONbits.POSRES = 0;         // No index pulse reset
@@ -49,6 +49,10 @@ void InitRQEI(void)
     // I/O Port mapping for QEI Modules
 
     AD1PCFGL = 0xFFFF;             // Configure for Digital Inputs
+
+    TRISBbits.TRISB2 = 1;
+    TRISBbits.TRISB3 = 1;
+    
     RPINR14bits.QEA1R = 2;         // QEIA Input tied to RP2 (QEA1R<4:0> Pin 2)
     RPINR14bits.QEB1R = 3;         // QEIB Input tied to RP3 (QEB1R<4:0> Pin 3)
 }
@@ -93,6 +97,9 @@ void InitLQEI(void)
     // I/O Port mapping for QEI Modules
 
     AD1PCFGL = 0xFFFF;             // Configure for Digital Inputs
+    TRISBbits.TRISB0 = 1;
+    TRISBbits.TRISB1 = 1;
+    
     RPINR16bits.QEA2R = 0;         // QEI2A Input tied to RP0 (QEA2R<4:0> Pin 21)
     RPINR16bits.QEB2R = 1;         // QEI2B Input tied to RP1 (QEB2R<4:0> Pin 22)
 }

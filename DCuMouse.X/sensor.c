@@ -85,7 +85,7 @@ unsigned int ReadFR(void)
     Sensors.FR = SampEmi(FR_DET);
     FR_EMI = OFF;
     __delay_ms(10);         // Ensure emitters are off for 10 ms
-    return Sensors.FR - Sensors.FRNoise;
+    return LinearizeFR(Sensors.FR - Sensors.FRNoise);
 }
 unsigned int ReadFL(void)
 {
@@ -95,7 +95,7 @@ unsigned int ReadFL(void)
     Sensors.FL = SampEmi(FL_DET);
     FL_EMI = OFF;
     __delay_ms(10);         // Ensure emitters are off for 10 ms
-    return Sensors.FL - Sensors.FLNoise;
+    return LinearizeFL(Sensors.FL - Sensors.FLNoise);
 }
 unsigned int ReadSR(void)
 {
@@ -105,7 +105,7 @@ unsigned int ReadSR(void)
     Sensors.SR = SampEmi(SR_DET);
     SR_EMI = OFF;
     __delay_ms(10);         // Ensure emitters are off for 10 ms
-    return Sensors.SR - Sensors.SRNoise;
+    return LinearizeSR(Sensors.SR - Sensors.SRNoise);
 }
 unsigned int ReadSL(void)
 {
@@ -115,78 +115,28 @@ unsigned int ReadSL(void)
     Sensors.SL = SampEmi(SL_DET);
     SL_EMI = OFF;
     __delay_ms(10);         // Ensure emitters are off for 10 ms
-    return Sensors.SL - Sensors.SLNoise;
+    return LinearizeSL(Sensors.SL - Sensors.SLNoise);
 }
 
 // Sensor Linearizations
 unsigned int LinearizeFR(unsigned int adc)
 {
-    printf("ADC %u\n", -120*adc + 1156);
-    // Upper Piecewise
-    if(975 >= adc >= 500)
-    {
-        
-    }
-    // Lower Piecewise
-    else if (500 > adc > 210)
-    {
-        return (float)(-38*adc + 450)/100;
-    }
-    else
-    {
-        return 0;
-    }
+    return 21.01*exp(-0.00276*adc)*10;
 }
-float LinearizeFL(unsigned int adc)
+
+unsigned int LinearizeFL(unsigned int adc)
 {
-    // Upper Piecewise
-    if(975 >= adc >= 240)
-    {
-        return -198*adc + 1200;
-    }
-    // Lower Piecewise
-    else if (240 > adc > 100)
-    {
-        return -11*adc + 175;
-    }
-    else
-    {
-        return 0;
-    }
+    return 19.432*exp(-0.00283*adc)*10;
 }
-float LinearizeSR(unsigned int adc)
+
+unsigned int LinearizeSR(unsigned int adc)
 {
-    // Upper Piecewise
-    if(975 >= adc >= 500)
-    {
-        return -130*adc + 1150;
-    }
-    // Lower Piecewise
-    else if (500 > adc > 200)
-    {
-        return -23*adc + 425;
-    }
-    else
-    {
-        return 0;
-    }
+    return 32.45*exp(-0.004376*adc)*10;
 }
-float LinearizeSL(unsigned int adc)
+
+unsigned int LinearizeSL(unsigned int adc)
 {
-    // Upper Piecewise
-    if(975 >= adc >= 235)
-    {
-        return -185*adc + 1200;
-    }
-    // Lower Piecewise
-    else if (224 > adc > 70)
-    {
-        return -9*adc + 132;
-    }
-    else
-    {
-        return 0;
-    }
+    return 34.633*exp(-0.003515*adc)*10;
 }
 
 // Emitter Helper Functions
@@ -213,9 +163,7 @@ unsigned int SampNoise(char chan)
 void CalibrateSensors(void)
 {
     printf("Front Right: %u\n", ReadFR());
-    //__delay_ms(1000);
     printf("Front Left: %u\n", ReadFL());
-    //__delay_ms(1000);
     printf("Side Right: %u\n", ReadSR());
     printf("Side Left: %u\n\n", ReadSL());
     __delay_ms(1000);

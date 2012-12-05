@@ -46,9 +46,9 @@ unsigned int ReadSL(void);
 
 // Sensor Mutator Functions
 unsigned int LinearizeFR(unsigned int adc);
-float LinearizeSR(unsigned int adc);
-float LinearizeFL(unsigned int adc);
-float LinearizeSL(unsigned int adc);
+unsigned int LinearizeSR(unsigned int adc);
+unsigned int LinearizeFL(unsigned int adc);
+unsigned int LinearizeSL(unsigned int adc);
 
 // Emitter Helper Functions
 unsigned int SampNoise(char chan);

@@ -26,29 +26,28 @@ int main(void)
     InitUART();
     //InitLED();
     InitADC();
-    //InitQEI();
-    //InitPWM();
+    InitQEI();
+    InitPWM();
     //InitPD();
-    //InitKinematics();
-    //InitKinematicsTimer();
+    InitKinematics();
+    InitKinematicsTimer();
     
-    TRISB = 0;
-
     //TestUART();
     //TestRMotor();
     //TestLMotor();
     //TestRQEI();
     //TestLQEI();
     //RMotorFor();
-    //__delay_ms(1000);
+    __delay_ms(1000);
 
-    //DriveOneCell();
+    DriveOneCell();
 
     while(1)
     {
         CalibrateSensors();
-       //printf("POS1CNT: %d\n", abs(POS1CNT));
-        //printf("Distance traveled: %f\n", GetDistance(abs(POS1CNT)));
+        //printf("POS1CNT: %d\n", abs(POS1CNT));
+        //
+        printf("Distance traveled: %f\n", GetDistance(abs(POS1CNT)));
         //printf("Velocity (m/s):%f\n", CalcVelocity(50,250));
     }
     /*
