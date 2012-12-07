@@ -35,7 +35,7 @@ void DriveOneCell(void)
 void DriveFor(unsigned int speed)
 {
     RMotorFor(speed);
-    LMotorFor(speed);
+    LMotorFor(LSTARTING_SPEED);
 }
 
 void DriveRev(unsigned int speed)
@@ -168,6 +168,21 @@ void TestLMotor(void)
 
 
 // Right Motor Functions
+void RMotorAccel(void)
+{
+    if(RMOTOR_SPEED < MAX_SPEED)            // If MAX_SPEED not reached, has room to speed up
+    {
+        RMOTOR_SPEED = RMOTOR_SPEED+25;     // Increase PWM duty cycle
+    }
+    else
+    {
+        RMOTOR_SPEED = RMOTOR_SPEED-25;     // Decrease PWM duty cycle
+    }
+    if(RMOTOR_SPEED > MAX_SPEED)            // Already operating at max speed
+        RMOTOR_SPEED = MAX_SPEED;
+    if(RMOTOR_SPEED < RSTARTING_SPEED)       // Too slow, set to start speed
+        RMOTOR_SPEED = RSTARTING_SPEED;
+}
 void RMotorRev(unsigned int speed)
 {
     RMOTOR_SPEED = speed;
@@ -197,25 +212,37 @@ void RClearPos()
 }
 
 // Left Motor Functions
+void LMotorAccel(void)
+{
+    if(LMOTOR_SPEED < MAX_SPEED)            // If MAX_SPEED not reached, has room to speed up
+    {
+        LMOTOR_SPEED = LMOTOR_SPEED+25;     // Increase PWM duty cycle
+    }
+    else
+    {
+        LMOTOR_SPEED = LMOTOR_SPEED-25;     // Decrease PWM duty cycle
+    }
+    if(LMOTOR_SPEED > MAX_SPEED)            // Already operating at max speed
+        LMOTOR_SPEED = MAX_SPEED;
+    if(LMOTOR_SPEED < LSTARTING_SPEED)       // Too slow, set to start speed
+        LMOTOR_SPEED = LSTARTING_SPEED;
+}
 void LMotorRev(unsigned int speed)
 {
     LMOTOR_SPEED = speed;
     PWMCON1bits.PEN2L = 1;
     PWMCON1bits.PEN2H = 0;
 }
-
 void LMotorFor(unsigned int speed)
 {
     LMOTOR_SPEED = speed;
     PWMCON1bits.PEN2L = 0;
     PWMCON1bits.PEN2H = 1;
 }
-
 void LMotorStop(void)
 {
     LMOTOR_SPEED = 0;       // 0% Duty Cycle
 }
-
 void LMotorBrake(void)
 {
     PTCONbits.PTEN = 0;         // Disable PWM
@@ -234,23 +261,22 @@ void LClearPos(void)
 
 void PDTrack(int RightAverage, int LeftAverage)
 {
-
 //    StopMotors();
-//    if(RightTrack())            // Right Wall Avail For Tracking
-//    {
-//        PDTrackRight(RightAverage);
-//    }
-//    else if(LeftTrack())        // Left Wall Available for Tracking
+    if(RightWall())            // Right Wall Avail For Tracking
+    {
+        PDTrackRight(RightAverage);
+    }
+//    else if(LeftWall())        // Left Wall Available for Tracking
 //    {
 //        PDTrackLeft(LeftAverage);
 //    }
-//    else                                // No Walls to track...
-//    {
-//        ClearPDError();                      // Reset PD Errors
-//        RClearAlignFlag();
-//        LClearAlignFlag();
-//    }
-//    DriveFor(DRIVE_SPEED);
+    else                                // No Walls to track...
+    {
+        ClearPDError();                      // Reset PD Errors
+        RClearAlign();
+        LClearAlign();
+    }
+    //DriveFor();
 }
 
 /**************************************************************/
@@ -269,45 +295,49 @@ void PDTrack(int RightAverage, int LeftAverage)
 void PDTrackRight(int RightAverage)
 {
     CalculatePD(RightAverage, 'R');
-//
-//    if(GetP() > 5)          // Pulling Right, Speed up R Motor
-//    {
-//        RSetAlignFlag();
-//        LClearAlignFlag();  // Clear Opposite motor flag to return to proper speed
-//    }
-//    else if(GetP() < -5)     // Pulling Left, Speed up L motor
-//    {
-//        LSetAlignFlag();
-//        RClearAlignFlag();
-//    }
-//    else                                    // No Error, Go Straight
-//    {
-//        ClearPDError();                    // Be Sure to clear  PD Error
-//        RClearAlignFlag();
-//        LClearAlignFlag();
-//    }
+    
+    if(GetP() > 12)          // Pulling Right, Speed up R Motor
+    {
+        printf("RW Track, Pulling Right.\n");
+        RSetAlign();
+        LClearAlign();  // Clear Opposite motor flag to return to proper speed
+    }
+    else if(GetP() < -12)     // Pulling Left, Speed up L motor
+    {
+        printf("RW Track, Pulling Left.\n");
+        LSetAlign();
+        RClearAlign();
+    }
+    else                                    // No Error, Go Straight
+    {
+        ClearPDError();                    // Be Sure to clear  PD Error
+        RClearAlign();
+        LClearAlign();
+    }
 }
 
 void PDTrackLeft(int LeftAverage)
 {
     CalculatePD(LeftAverage, 'L');
-//
-//    if(GetP() > 5)                 // Pulling Left, Speed up L Motor
-//    {
-//        LSetAlignFlag();
-//        RClearAlignFlag();                          // Clear Opposite motor flag to return to proper speed
-//    }
-//    else if(GetP() < -5)           // Pulling Right, Speed up R motor
-//    {
-//        RSetAlignFlag();
-//        LClearAlignFlag();
-//    }
-//    else                                            // No Error, Go Straight
-//    {
-//        ClearPDError();
-//        RClearAlignFlag();
-//        LClearAlignFlag();
-//    }
+
+    if(GetP() > 12)                 // Pulling Left, Speed up L Motor
+    {
+        printf("LW Track, Pulling Left.\n");
+        LSetAlign();
+        RClearAlign();              // Clear Opposite motor flag to return to proper speed
+    }
+    else if(GetP() < -12)           // Pulling Right, Speed up R motor
+    {
+        printf("LW Track, Pulling Right.\n");
+        RSetAlign();
+        LClearAlign();
+    }
+    else                            // No Error, Go Straight
+    {
+        ClearPDError();
+        RClearAlign();
+        LClearAlign();
+    }
 }
 
 // Move mouse forward until in center, using Front sensors for guide
@@ -331,27 +361,28 @@ void CalculatePD(int Average, char Side)
 void Proportional(int Average, char Side)
 {
     if(Side == 'R')
-        SetP(Kp*(ReadSR() - Average));
+        SetP(Kp*(Average - ReadSR()));
     if(Side == 'L')
-        SetP(Kp*(ReadSL() - Average));
+        SetP(Kp*Average - ReadSL());
 }
 
 void Derivative()
-{   SetD((abs(GetP()) - GetPrevError())/Kd);    }
+{   SetD(Kd*(GetP() - GetPrevError()));    }
 
 // Initializers
-
 void InitPD()
 {
     PID.Derivative = 0;
     PID.PDError = 0;
     PID.ePrev = 0;
     PID.Proportional = 0;
+    PID.RFlag = 0;
+    PID.LFlag = 0;
 }
 
 void ClearPDError()
 {
-    InitPD();
+    PID.PDError = 0;
 }
 
 // Controller Accessor Functions
@@ -379,6 +410,39 @@ void SetP(int P)
 
 void SetD(int D)
 {  PID.Derivative = D;  }
+
+
+// Functions for setting tracking flags based on
+// wall readings. If flags are set, it will track 
+// based on walls available.
+
+// Controller Flags
+bool RTrack(void)
+{
+    return PID.RFlag;
+}
+bool LTrack(void)
+{
+    return PID.LFlag;
+}
+
+void RClearAlign(void)
+{
+    PID.RFlag = 0;
+}
+void LClearAlign(void)
+{
+    PID.LFlag = 0;
+}
+
+void RSetAlign(void)
+{
+    PID.RFlag = 1;
+}
+void LSetAlign(void)
+{
+    PID.LFlag = 1;
+}
 
 /**************************************************************/
 /************* END OF PD CONTROLLER FUNCTIONS *****************/

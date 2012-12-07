@@ -48,7 +48,7 @@ void InitRQEI(void)
     /********** RPINR14 Register  **********/
     // I/O Port mapping for QEI Modules
 
-    AD1PCFGL = 0xFFFF;             // Configure for Digital Inputs
+    //AD1PCFGL = 0xFFFF;             // Configure for Digital Inputs
 
     TRISBbits.TRISB2 = 1;
     TRISBbits.TRISB3 = 1;
@@ -96,7 +96,7 @@ void InitLQEI(void)
     /********** RPINR14 Register  **********/
     // I/O Port mapping for QEI Modules
 
-    AD1PCFGL = 0xFFFF;             // Configure for Digital Inputs
+    //AD1PCFGL = 0xFFFF;             // Configure for Digital Inputs
     TRISBbits.TRISB0 = 1;
     TRISBbits.TRISB1 = 1;
     

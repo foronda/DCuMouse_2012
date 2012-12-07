@@ -47,16 +47,16 @@ void InitKinematicsTimer()
     T3CONbits.TON = 0;      // Disable Timer
     T3CONbits.TCS = 0;      // Select internal instruction cycle clock
     T3CONbits.TGATE = 0;    // Disable Gated Timer mode
-    T3CONbits.TCKPS = 0b11;  // Select 1:256 Prescaler
+    T3CONbits.TCKPS = 0b11; // Select 1:256 Prescaler
 
     TMR3 = 0x00;            // Clear timer register
-    PR3 =  0x9897;          // Period = Desired Time/TCY, TCY = 1/(FCY/Prescalar)
+    PR3 =  0x3D09;          // Period = Desired Time/TCY, TCY = 1/(FCY/Prescalar)
                             // Resolution of 250 ms = 1/4 sec
 
-    IPC2bits.T3IP = 7;   // Set Timer1 Interrupt Priority Level
-    IFS0bits.T3IF = 0;      // Clear Timer1 Interrupt Flag
-    IEC0bits.T3IE = 1;      // Enable Timer1 interrupt
-    //T3CONbits.TON = 1;      // Start Timer
+    IPC2bits.T3IP = 7;      // Set Timer3 Interrupt Priority Level
+    IFS0bits.T3IF = 0;      // Clear Timer3 Interrupt Flag
+    IEC0bits.T3IE = 1;      // Enable Timer3 interrupt
+    T3CONbits.TON = 1;      // Start Timer
 }
 
 // Motor Interrupt Functions
@@ -78,14 +78,40 @@ void __attribute__((__interrupt__, __shadow__, no_auto_psv)) _T2Interrupt(void)
 // In this interrupt, kinematic equations will be used to calculate velocity and acceleration.
 void __attribute__((__interrupt__, __shadow__, no_auto_psv)) _T3Interrupt(void)
 {
-    K.Dnew = GetDistance(abs(POS1CNT));
-    //K.Vnew = CalcVelocity(K.Dnew-K.Dold, 250);      // Interrupts happen every 250ms
-    //K.Dold = K.Dnew;
-    if(K.Dnew >= 150)
+    ReadSR();
+    
+    //T3CONbits.TON = 0;      // Disable Timer
+    PDTrack(76, 81);
+    //printf("P Term: %d\n", GetP());
+    //printf("D Term: %d\n", GetD());
+    //printf("PDError:%d.\n\n", GetPDError()/4);
+    // Speed up right motor
+    if(RTrack())
     {
-        RMotorStop();
-        LMotorStop();
+        RMOTOR_SPEED = RMOTOR_SPEED + abs(GetPDError())/6;
+        LMOTOR_SPEED = LSTARTING_SPEED;
+        //LMOTOR_SPEED = LMOTOR_SPEED - abs(GetPDError())/6;
+        if(RMOTOR_SPEED > MAX_SPEED)
+            RMOTOR_SPEED = MAX_SPEED;
+        //if(LMOTOR_SPEED < STARTING_SPEED)
+          //  LMOTOR_SPEED = STARTING_SPEED;
     }
+    // Speed up left motor
+    else if(LTrack())
+    {
+        LMOTOR_SPEED = LMOTOR_SPEED + abs(GetPDError())/6;
+        RMOTOR_SPEED = RSTARTING_SPEED;
+        if(LMOTOR_SPEED > MAX_SPEED)
+            LMOTOR_SPEED = MAX_SPEED;
+    }
+    else
+    {
+        RMOTOR_SPEED = RSTARTING_SPEED;
+        LMOTOR_SPEED = LSTARTING_SPEED;
+    }
+    //TMR3 = 0x00;            // Clear timer register
+    //T3CONbits.TON = 1;      // Enable Timer
+    
     IFS0bits.T3IF = 0;  //Clear the INT3 interrupt flag or else
                         //the CPU will keep vectoring back to the ISR
 }

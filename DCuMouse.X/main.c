@@ -16,6 +16,8 @@ _FWDT(FWDTEN_OFF);                      // Watchdog Timer Off
 
 _FICD(ICS_PGD3 & JTAGEN_OFF);           // Comm Channel Select (Communicate on PGC1/EMUC1 and PGD1/EMUD1)
                                         // JTAG Port Enable (JTAG is Disabled)
+int RightAverage = 0;
+int LeftAverage = 0;
 
 int main(void)
 {
@@ -24,30 +26,35 @@ int main(void)
     TRISB = 0;
     
     InitUART();
-    //InitLED();
+    InitLED();
     InitADC();
     InitQEI();
     InitPWM();
     //InitPD();
-    InitKinematics();
-    InitKinematicsTimer();
-    
+    //InitKinematics();
+   
     //TestUART();
     //TestRMotor();
     //TestLMotor();
     //TestRQEI();
     //TestLQEI();
     //RMotorFor();
-    __delay_ms(1000);
-
-    DriveOneCell();
+    //__delay_ms(1000);
+    DriveFor(STARTING_SPEED);
+    InitKinematicsTimer();
+    //__delay_ms(1000);
+    //DriveOneCell();
 
     while(1)
     {
-        CalibrateSensors();
+
+        //if(FrontWall())
+          //  printf("Front Wall Detected.\n");
+        
+        //CalibrateSensors();
         //printf("POS1CNT: %d\n", abs(POS1CNT));
         //
-        printf("Distance traveled: %f\n", GetDistance(abs(POS1CNT)));
+        //printf("Distance traveled: %f\n", GetDistance(abs(POS1CNT)));
         //printf("Velocity (m/s):%f\n", CalcVelocity(50,250));
     }
     /*

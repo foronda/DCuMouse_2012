@@ -45,11 +45,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/controller.o ${OBJECTDIR}/led.o ${OBJECTDIR}/main.o ${OBJECTDIR}/pwm.o ${OBJECTDIR}/qei.o ${OBJECTDIR}/sensor.o ${OBJECTDIR}/uart.o ${OBJECTDIR}/interrupts.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/controller.o.d ${OBJECTDIR}/led.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/pwm.o.d ${OBJECTDIR}/qei.o.d ${OBJECTDIR}/sensor.o.d ${OBJECTDIR}/uart.o.d ${OBJECTDIR}/interrupts.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/controller.o ${OBJECTDIR}/led.o ${OBJECTDIR}/main.o ${OBJECTDIR}/pwm.o ${OBJECTDIR}/qei.o ${OBJECTDIR}/sensor.o ${OBJECTDIR}/uart.o ${OBJECTDIR}/interrupts.o ${OBJECTDIR}/wall.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/controller.o.d ${OBJECTDIR}/led.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/pwm.o.d ${OBJECTDIR}/qei.o.d ${OBJECTDIR}/sensor.o.d ${OBJECTDIR}/uart.o.d ${OBJECTDIR}/interrupts.o.d ${OBJECTDIR}/wall.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/controller.o ${OBJECTDIR}/led.o ${OBJECTDIR}/main.o ${OBJECTDIR}/pwm.o ${OBJECTDIR}/qei.o ${OBJECTDIR}/sensor.o ${OBJECTDIR}/uart.o ${OBJECTDIR}/interrupts.o
+OBJECTFILES=${OBJECTDIR}/controller.o ${OBJECTDIR}/led.o ${OBJECTDIR}/main.o ${OBJECTDIR}/pwm.o ${OBJECTDIR}/qei.o ${OBJECTDIR}/sensor.o ${OBJECTDIR}/uart.o ${OBJECTDIR}/interrupts.o ${OBJECTDIR}/wall.o
 
 
 CFLAGS=
@@ -133,6 +133,12 @@ ${OBJECTDIR}/interrupts.o: interrupts.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/interrupts.o.ok ${OBJECTDIR}/interrupts.o.err 
 	@${FIXDEPS} "${OBJECTDIR}/interrupts.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c ${MP_CC} $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -O3 -funroll-loops -MMD -MF "${OBJECTDIR}/interrupts.o.d" -o ${OBJECTDIR}/interrupts.o interrupts.c    
 	
+${OBJECTDIR}/wall.o: wall.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/wall.o.d 
+	@${RM} ${OBJECTDIR}/wall.o.ok ${OBJECTDIR}/wall.o.err 
+	@${FIXDEPS} "${OBJECTDIR}/wall.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c ${MP_CC} $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -O3 -funroll-loops -MMD -MF "${OBJECTDIR}/wall.o.d" -o ${OBJECTDIR}/wall.o wall.c    
+	
 else
 ${OBJECTDIR}/controller.o: controller.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -181,6 +187,12 @@ ${OBJECTDIR}/interrupts.o: interrupts.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/interrupts.o.d 
 	@${RM} ${OBJECTDIR}/interrupts.o.ok ${OBJECTDIR}/interrupts.o.err 
 	@${FIXDEPS} "${OBJECTDIR}/interrupts.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c ${MP_CC} $(MP_EXTRA_CC_PRE)  -g -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -O3 -funroll-loops -MMD -MF "${OBJECTDIR}/interrupts.o.d" -o ${OBJECTDIR}/interrupts.o interrupts.c    
+	
+${OBJECTDIR}/wall.o: wall.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/wall.o.d 
+	@${RM} ${OBJECTDIR}/wall.o.ok ${OBJECTDIR}/wall.o.err 
+	@${FIXDEPS} "${OBJECTDIR}/wall.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c ${MP_CC} $(MP_EXTRA_CC_PRE)  -g -omf=elf -x c -c -mcpu=$(MP_PROCESSOR_OPTION) -O3 -funroll-loops -MMD -MF "${OBJECTDIR}/wall.o.d" -o ${OBJECTDIR}/wall.o wall.c    
 	
 endif
 

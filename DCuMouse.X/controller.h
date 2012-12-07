@@ -21,16 +21,18 @@
 #define Prescalar 1
 
 // Controller Gain Constants
-#define Kp 8
+#define Kp 2
 #define Kd 1
 
 // Motor Speeds
-#define STARTING_SPEED PTPER/32
+#define RSTARTING_SPEED PTPER/8
+#define LSTARTING_SPEED PTPER/6
 #define MAX_SPEED PTPER/2
 
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 #include "common.h"
+#include "led.h"
 #include "interrupts.h"
 #include "sensor.h"
 #include "pwm.h"
@@ -55,6 +57,7 @@ void TestRMotor(void);
 void TestLMotor(void);
 
 // Right Motor Functions
+void RMotorAccel(void);
 void RMotorFor(unsigned int speed);
 void RMotorRev(unsigned int speed);
 void RMotorStop(void);
@@ -62,6 +65,7 @@ void RMotorBrake(void);
 void RClearPos(void);
 
 // Left Motor Functions
+void LMotorAccel(void);
 void LMotorFor(unsigned int speed);
 void LMotorRev(unsigned int speed);
 void LMotorStop(void);
@@ -84,7 +88,9 @@ struct Controller
     int ePrev;          // Previous error
     int Proportional;   // Calculated Proportional value
     int Derivative;     // Calculated Derivative value
-    int PDError;        
+    int PDError;
+    char RFlag;         // Flags for determining trackability
+    char LFlag;
 };
 
 // Controller Functions
@@ -112,6 +118,16 @@ void SetPrevError(int eP);
 void SetPDError(int PD);
 void SetP(int P);
 void SetD(int D);
+
+// Controller Flag Functions
+// Controller Flags
+bool RTrack(void);
+bool LTrack(void);
+
+void RClearAlign(void);
+void LClearAlign(void);
+void RSetAlign(void);
+void LSetAlign(void);
 
 /****************************************************/
 /************* END OF PD CONTROLLER *****************/
