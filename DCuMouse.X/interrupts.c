@@ -1,9 +1,6 @@
 #include "interrupts.h"
 #include "controller.h"
 
-bool AccelFlag;
-bool DecelFlag;
-
 struct Kinematics K;
 
 // Initialize Motor Interrupts

@@ -1,5 +1,6 @@
 #include "qei.h"
 #include "controller.h"
+
 char count = 0;
 
 void InitQEI(void)
@@ -156,3 +157,12 @@ void TestQEI(void)
     //PDC1 = 1;       // 0% Duty cyle for Motor PWM
 }
 
+char GetCount()
+{
+    return count;
+}
+
+void SetCount(char c)
+{
+    count = c;
+}

@@ -41,6 +41,8 @@ int main(void)
     //RMotorFor();
     //__delay_ms(1000);
     //DriveFor(STARTING_SPEED);
+    //DriveFor(RSTARTING_SPEED);
+
     InitKinematicsTimer();
     __delay_ms(1000);
     DriveOneCell();

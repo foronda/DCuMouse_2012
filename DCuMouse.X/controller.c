@@ -320,13 +320,13 @@ void PDTrackLeft(int LeftAverage)
 {
     CalculatePD(LeftAverage, 'L');
 
-    if(GetP() > 12)                 // Pulling Left, Speed up L Motor
+    if(GetP() > 8)                 // Pulling Left, Speed up L Motor
     {
         printf("LW Track, Pulling Left.\n");
         LSetAlign();
         RClearAlign();              // Clear Opposite motor flag to return to proper speed
     }
-    else if(GetP() < -12)           // Pulling Right, Speed up R motor
+    else if(GetP() < -8)           // Pulling Right, Speed up R motor
     {
         printf("LW Track, Pulling Right.\n");
         RSetAlign();
