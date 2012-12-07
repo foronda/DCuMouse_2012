@@ -34,7 +34,7 @@
 
 #include "common.h"
 #include "led.h"
-//#include "interrupts.h"
+#include "interrupts.h"
 #include "sensor.h"
 #include "pwm.h"
 

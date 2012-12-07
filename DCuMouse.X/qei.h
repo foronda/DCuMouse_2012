@@ -3,8 +3,6 @@
 
 #include "common.h"
 
-bool DriveFlag;
-
 void InitQEI();
 
 void InitRQEI();
