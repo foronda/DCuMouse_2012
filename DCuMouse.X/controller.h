@@ -25,8 +25,8 @@
 #define Kd 1
 
 // Motor Speeds
-#define RSTARTING_SPEED PTPER/8
-#define LSTARTING_SPEED PTPER/6
+#define RSTARTING_SPEED PTPER/7
+#define LSTARTING_SPEED PTPER/5
 #define MAX_SPEED PTPER/2
 
 #ifndef CONTROLLER_H

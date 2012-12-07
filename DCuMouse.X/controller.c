@@ -3,7 +3,7 @@
 #include "pwm.h"
 
 #define TURN_COUNT 3400         // QEI Counts needed to complete a turn 90deg turn
-#define TURN_SPEED PTPER/4     // 25% Duty Cycle to match turn count
+#define TURN_SPEED PTPER/2     // 25% Duty Cycle to match turn count
 
 struct Controller PID;
 

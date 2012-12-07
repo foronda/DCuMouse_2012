@@ -119,12 +119,11 @@ void StopRQEIInt()
 
 void __attribute__((__interrupt__, no_auto_psv)) _QEI1Interrupt (void)
 {
-    LMotorStop();
-    RMotorStop();
+    //LMotorStop();
+    //RMotorStop();
     printf("Count: %d\n", count);
     count++;
-    __delay_ms(1000);
-    if(count <=2)
+    if(count < 12)
     {
         DriveOneCell();
     }
@@ -132,6 +131,12 @@ void __attribute__((__interrupt__, no_auto_psv)) _QEI1Interrupt (void)
     {
         LMotorStop();
         RMotorStop();
+        __delay_ms(1000);
+        LTurn(PTPER/2);
+        LMotorStop();
+        RMotorStop();
+        __delay_ms(1000);
+        count = 0;
     }
     IFS3bits.QEI1IF = 0;        // Clears QEI1 Interrupt Flag
 }

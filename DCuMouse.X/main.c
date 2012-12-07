@@ -26,11 +26,11 @@ int main(void)
     TRISB = 0;
     
     InitUART();
-    InitLED();
+    //InitLED();
     InitADC();
     InitQEI();
     InitPWM();
-    //InitPD();
+    InitPD();
     //InitKinematics();
    
     //TestUART();
@@ -40,14 +40,13 @@ int main(void)
     //TestLQEI();
     //RMotorFor();
     //__delay_ms(1000);
-    DriveFor(STARTING_SPEED);
+    //DriveFor(STARTING_SPEED);
     InitKinematicsTimer();
-    //__delay_ms(1000);
-    //DriveOneCell();
+    __delay_ms(1000);
+    DriveOneCell();
 
     while(1)
     {
-
         //if(FrontWall())
           //  printf("Front Wall Detected.\n");
         
